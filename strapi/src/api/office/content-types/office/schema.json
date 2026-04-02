@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "offices",
+  "info": {
+    "singularName": "office",
+    "pluralName": "offices",
+    "displayName": "Office",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "coordinates": {
+      "type": "string",
+      "required": true,
+      "regex": "^([-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)),\\s*([-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?))$"
+    },
+    "city": {
+      "type": "string",
+      "required": true
+    },
+    "visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "working_time": {
+      "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "address": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

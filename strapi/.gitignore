@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Build/cache
+.cache/
+build/
+dist/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Runtime files
+*.log
+
+# Local database/files (adjust if you intentionally version these)
+.tmp/
+.sqlite/
+*.db
+*.sqlite
+
+# Uploads generated in local dev
+public/uploads/

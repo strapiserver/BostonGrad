@@ -1,0 +1,103 @@
+{
+  "kind": "collectionType",
+  "collectionName": "reviews",
+  "info": {
+    "singularName": "review",
+    "pluralName": "reviews",
+    "displayName": "review",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "fingerprint": {
+      "type": "string",
+      "unique": true,
+      "required": false
+    },
+    "text": {
+      "type": "text",
+      "required": true,
+      "maxLength": 10000
+    },
+    "screenshots": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "positive",
+        "neutral",
+        "negative",
+        "question"
+      ],
+      "required": true
+    },
+    "isDispute": {
+      "type": "boolean"
+    },
+    "isClosed": {
+      "type": "boolean"
+    },
+    "isApproved": {
+      "type": "boolean"
+    },
+    "admin_comment": {
+      "type": "string",
+      "private": true
+    },
+    "ipAddress": {
+      "type": "string"
+    },
+    "userAgent": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "ai_data": {
+      "type": "json"
+    },
+    "review_replies": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::review-reply.review-reply",
+      "mappedBy": "review"
+    },
+    "honeypot": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "telegram": {
+      "type": "string"
+    },
+    "whatsapp": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "review_categories": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::review-category.review-category"
+    },
+    "isExchangeDone": {
+      "type": "boolean"
+    },
+    "gossip": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "isVerified": {
+      "type": "boolean"
+    }
+  }
+}

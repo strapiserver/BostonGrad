@@ -1,0 +1,28 @@
+services:
+  strapi:
+    container_name: strapi
+    image: darkshrine/strapi:latest
+    build: .
+    restart: always
+    env_file: .env
+    environment:
+      DATABASE_CLIENT: sqlite
+      DATABASE_FILENAME: ./data/data.db
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      NODE_ENV: ${NODE_ENV}
+    volumes:
+      - data:/opt/app/data
+      - public:/opt/app/public
+    ports:
+      - "1337:1337"
+    networks:
+      - my-network
+
+volumes:
+  public:
+  data:
+networks:
+  my-network:
+    name: my-network
+    driver: bridge
