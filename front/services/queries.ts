@@ -739,6 +739,12 @@ export const mainSingleQuery = gql`
           subtitle
           seo_title
           seo_subtitle
+          benefit {
+            ... on ComponentSharedBenefit {
+              id
+              text
+            }
+          }
           image {
             data {
               id

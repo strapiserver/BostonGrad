@@ -1,18 +1,29 @@
 import React from "react";
-import { Box } from "@chakra-ui/react";
+import { Box, BoxProps } from "@chakra-ui/react";
 
-const Glass = ({ children }: { children: React.ReactNode }) => {
+type GlassProps = BoxProps & {
+  children: React.ReactNode;
+};
+
+const Glass = ({ children, ...boxProps }: GlassProps) => {
   return (
     <Box
+      position="relative"
+      display="inline-block"
+      w="fit-content"
+      h="fit-content"
+      maxW="100%"
+      maxH="100%"
       borderRadius="28px"
-      px={{ base: "6", md: "8" }}
-      py={{ base: "5", md: "6" }}
+      px={{ base: "2", md: "8" }}
+      py={{ base: "1", md: "6" }}
       bg="rgba(255,255,255,0.01)"
       border="1px solid rgba(170, 140, 240, 0.55)"
       boxShadow="0 18px 60px rgba(36, 18, 76, 0.2), inset 0 0 0 1px rgba(206,184,255,0.32)"
       backdropFilter="blur(6px) saturate(115%)"
       WebkitBackdropFilter="blur(6px) saturate(115%)"
       overflow="hidden"
+      {...boxProps}
       _before={{
         content: '""',
         position: "absolute",
@@ -38,17 +49,7 @@ const Glass = ({ children }: { children: React.ReactNode }) => {
         pointerEvents: "none",
       }}
     >
-      <Box
-        position="absolute"
-        top="10px"
-        right="14px"
-        w="80px"
-        h="2px"
-        bg="rgba(188,160,250,0.7)"
-      />
-      <Box position="relative" zIndex={1}>
-        {children}
-      </Box>
+      {children}
     </Box>
   );
 };

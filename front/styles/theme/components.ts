@@ -159,9 +159,19 @@ const components: Record<string, StyleConfig> = {
       //useColorModeValue("light", "shaded")
       //useColorModeValue("dark", "gray")
       primary: ({ theme, colorMode }) => {
-        return colorMode === "light"
-          ? createGradient(theme, "violet", true)
-          : createGradient(theme, "peach", true);
+        return {
+          color: "white",
+          border: "1px solid",
+          borderColor: "transparent",
+          boxShadow:
+            colorMode === "light"
+              ? "-2px -2px 12px -8px rgba(255, 180, 180, 0.8), 2px 2px 12px -8px rgba(120, 0, 0, 0.7)"
+              : "-2px -2px 12px -8px rgba(255, 140, 140, 0.45), 2px 2px 12px -8px rgba(255, 80, 80, 0.35)",
+          background:
+            colorMode === "light"
+              ? "linear-gradient(150deg, #ef4444, #b91c1c) padding-box, linear-gradient(150deg, #fecaca, #7f1d1d) border-box"
+              : "linear-gradient(150deg, #dc2626, #7f1d1d) padding-box, linear-gradient(150deg, #fca5a5, #450a0a) border-box",
+        };
       },
       no_contrast: ({ theme, colorMode }) => {
         return colorMode === "light"

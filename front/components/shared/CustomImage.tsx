@@ -1,4 +1,4 @@
-import { Image, Box, useBreakpointValue } from "@chakra-ui/react";
+import { Image, Box, useBreakpointValue, BoxProps } from "@chakra-ui/react";
 import React from "react";
 import { IImage } from "../../types/selector";
 import { cmsLinkPROD, cmsLinkDEV } from "../../services/utils";
@@ -50,6 +50,7 @@ const CustomImage = ({
   objectFit = "cover",
   lowQualityOnMobile = false,
   adaptiveQuality = false,
+  ...boxProps
 }: {
   img?: IImage | null;
   w?: string;
@@ -59,7 +60,7 @@ const CustomImage = ({
   objectFit?: "cover" | "contain";
   lowQualityOnMobile?: boolean;
   adaptiveQuality?: boolean;
-}) => {
+} & BoxProps) => {
   const env = process.env.NODE_ENV;
   const SRC = env === "production" ? cmsLinkPROD : cmsLinkDEV;
   const qualityMode = useBreakpointValue<"low" | "medium" | "high">({
@@ -82,7 +83,7 @@ const CustomImage = ({
   const imageKey = `${img?.id || "fallback"}-${qualityMode || "high"}-${adaptiveQuality ? "adaptive" : "default"}`;
 
   return (
-    <Box w={w} h={h} maxW={w} maxH={h} overflow="hidden">
+    <Box w={w} h={h} maxW={w} maxH={h} overflow="hidden" {...boxProps}>
       <Image
         key={imageKey}
         w="100%"

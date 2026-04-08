@@ -58,4 +58,10 @@ export interface IMainSingle {
   seo_title?: string;
   seo_subtitle?: string;
   image?: IImage;
+  benefit?: IMainBenefit[];
+}
+
+export interface IMainBenefit {
+  id: string;
+  text: string;
 }

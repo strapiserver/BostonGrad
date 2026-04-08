@@ -6,10 +6,12 @@ const Nav = () => {
     <Box
       display={{ base: "none", xl: "block" }}
       h="calc(100vh - 80px)"
-      maxW="200"
+      w="100%"
       position="absolute"
       top="80px"
-      left="2"
+      left="0"
+      right="0"
+      px="2"
     >
       <NavBody />
     </Box>

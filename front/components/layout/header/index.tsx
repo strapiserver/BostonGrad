@@ -30,18 +30,18 @@ const Header = () => {
       bgColor={bgColor as any}
       p={[2, 4]}
       zIndex="modal"
-      justifyContent="center"
+      justifyContent="stretch"
       boxShadow="lg"
     >
-      <HStack w={{ base: "100%", md: "888px" }} justifyContent="space-between">
+      <HStack w="100%" justifyContent="space-between">
         <HStack spacing="3" minW={0}>
           <Logo />
-          <Box display={{ base: "none", xl: "block" }}>
-            <NavBody inline />
-          </Box>
         </HStack>
 
         <HStack>
+          <Box display={{ base: "none", xl: "block" }}>
+            <NavBody inline />
+          </Box>
           <CitySelector />
           <SwipeableDrawer />
 

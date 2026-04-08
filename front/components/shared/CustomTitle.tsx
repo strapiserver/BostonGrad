@@ -24,7 +24,7 @@ export default function ({
 }: CustomTitleProps) {
   const [peripheryColor, centerColor] = useToken(
     "colors",
-    useColorModeValue(["violet.900", "violet.700"], ["bg.200", "violet.600"]),
+    useColorModeValue(["orange.900", "red.600"], ["bg.200", "red.600"]),
   );
 
   return (
@@ -48,10 +48,10 @@ export default function ({
       >
         {title}
       </Text>
-      {subtitle && (
+      {/* {subtitle && (
         <Text
           as="p"
-          fontSize={{ base: "md", lg: "xl" }}
+          fontSize={{ base: "sm", lg: "xl" }}
           mt={2}
           color="bg.700"
           fontWeight="light"
@@ -59,7 +59,7 @@ export default function ({
         >
           {subtitle}
         </Text>
-      )}
+      )} */}
 
       {subtitle2 && (
         <Text

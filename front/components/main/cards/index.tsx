@@ -199,7 +199,7 @@ const Cards = ({ cards }: { cards?: ICard[] | null }) => {
                       />
                     </Box>
 
-                    <VStack align="start" p={["1", "2"]}>
+                    <VStack align="start" p={["1", "2"]} minH="200px">
                       <Text
                         variant="contrast"
                         fontSize={["xs", "sm", "lg"]}
@@ -211,7 +211,7 @@ const Cards = ({ cards }: { cards?: ICard[] | null }) => {
                       <ResponsiveText variant="no_contrast" whiteSpace="normal">
                         {truncateTo100(card.subheader)}{" "}
                         <Box as="span" textDecor="underline">
-                          читать далее...
+                          читать далее →
                         </Box>
                       </ResponsiveText>
                     </VStack>

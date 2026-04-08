@@ -1,10 +1,11 @@
-import { FiHome, FiPlusCircle } from "react-icons/fi";
-import { LiaTelegramPlane } from "react-icons/lia";
-import { RiTokenSwapLine, RiMapPinLine, RiRobot2Line } from "react-icons/ri";
+import {
+  RiHome5Fill,
+  RiGraduationCapFill,
+  RiTelegram2Fill,
+  RiHotelFill,
+} from "react-icons/ri";
 import LinkButton from "../../shared/LinkButton";
 import { HStack, VStack } from "@chakra-ui/react";
-
-import { LiaExchangeAltSolid } from "react-icons/lia";
 
 const NavBody = ({ inline = false }: { inline?: boolean }) => {
   const handleClearStorage = () => {
@@ -23,7 +24,7 @@ const NavBody = ({ inline = false }: { inline?: boolean }) => {
       <LinkButton
         message="Домой"
         href={"/"}
-        CustomIcon={FiHome}
+        CustomIcon={RiHome5Fill}
         compact={inline}
       />
 
@@ -38,16 +39,16 @@ const NavBody = ({ inline = false }: { inline?: boolean }) => {
         CustomIcon={RiTokenSwapLine}
       /> */}
       <LinkButton
-        message="Обменники"
-        href={"/exchangers"}
-        CustomIcon={LiaExchangeAltSolid}
+        message="Университеты"
+        href={"/universities"}
+        CustomIcon={RiGraduationCapFill}
         compact={inline}
       />
 
       <LinkButton
         message="Телеграм"
         href={`https://t.me/${process.env.NEXT_PUBLIC_NAME}`}
-        CustomIcon={LiaTelegramPlane}
+        CustomIcon={RiTelegram2Fill}
         compact={inline}
       />
       {/* <LinkButton
@@ -56,9 +57,9 @@ const NavBody = ({ inline = false }: { inline?: boolean }) => {
         CustomIcon={RiRobot2Line}
       /> */}
       <LinkButton
-        message="Офисы"
-        href={"/map"}
-        CustomIcon={RiMapPinLine}
+        message="Проживание"
+        href={"/living"}
+        CustomIcon={RiHotelFill}
         compact={inline}
       />
     </Wrapper>

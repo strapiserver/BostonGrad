@@ -88,14 +88,6 @@ const Layout = ({ children }: { children: any }) => {
         "&::WebkitOverflowScrolling": "touch",
       }}
     >
-      <Box
-        position="absolute"
-        w="100%"
-        h={{ base: "70vh", lg: "98vh" }}
-        zIndex={0}
-        pointerEvents="none" // <-- lets all clicks/touches pass through
-        bgGradient={`radial-gradient(ellipse at 50% -10%, ${ambientColor} 10%, transparent 50%)`}
-      />
       <Header />
 
       {loadingStatus === "pending" && (
