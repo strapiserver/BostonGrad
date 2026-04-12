@@ -17,42 +17,53 @@ import { IImage } from "../types/selector";
 type SocialNetworkItem = {
   name: string;
   icon: IImage | null;
+  url: string;
 };
 
-const loadCountries = async (): Promise<string[]> => {
+type CountryOption = {
+  id: string;
+  name: string;
+};
+
+const loadCountries = async (): Promise<CountryOption[]> => {
   const env = process.env.NODE_ENV;
   const publicBase = env === "production" ? cmsLinkPROD : cmsLinkDEV;
   const cmsBase = resolveInternalUrl(publicBase, internalCmsLink);
   const adminUrl = `${cmsBase}/admin/content-manager/collectionType/api::country.country?page=1&pageSize=200&sort=name:ASC`;
   const apiUrl = `${cmsBase}/api/countries?pagination[page]=1&pagination[pageSize]=200&sort=name:ASC`;
 
-  const extractNames = (payload: any): string[] => {
+  const extractCountries = (payload: any): CountryOption[] => {
     const candidates = [
       ...(Array.isArray(payload?.results) ? payload.results : []),
       ...(Array.isArray(payload?.data) ? payload.data : []),
     ];
 
     return candidates
-      .map((item: any) => item?.name || item?.attributes?.name)
-      .filter((name: any): name is string => typeof name === "string" && !!name.trim());
+      .map((item: any) => {
+        const id = item?.id || item?.documentId || item?.attributes?.id;
+        const name = item?.name || item?.attributes?.name;
+        if (!id || typeof name !== "string" || !name.trim()) return null;
+        return { id: String(id), name };
+      })
+      .filter((country: any): country is CountryOption => Boolean(country));
   };
 
   try {
     const adminRes = await fetch(adminUrl);
     if (adminRes.ok) {
       const adminJson = await adminRes.json();
-      const names = extractNames(adminJson);
-      if (names.length) return names;
+      const countries = extractCountries(adminJson);
+      if (countries.length) return countries;
     }
   } catch {}
 
   try {
     const apiRes = await fetch(apiUrl);
-    if (!apiRes.ok) return [];
+    if (!apiRes.ok) return [] as CountryOption[];
     const apiJson = await apiRes.json();
-    return extractNames(apiJson);
+    return extractCountries(apiJson);
   } catch {
-    return [];
+    return [] as CountryOption[];
   }
 };
 
@@ -73,6 +84,7 @@ const loadSocialNetworks = async (): Promise<SocialNetworkItem[]> => {
       .map((item: any) => {
         const attrs = item?.attributes || item || {};
         const name = attrs?.name;
+        const url = attrs?.url;
         const iconRaw = attrs?.logo;
         const iconAttrs = iconRaw?.data?.attributes || iconRaw || {};
         const iconUrl =
@@ -91,11 +103,14 @@ const loadSocialNetworks = async (): Promise<SocialNetworkItem[]> => {
                   : null,
             } as IImage)
           : null;
-        return { name, icon };
+        return { name, icon, url: typeof url === "string" ? url : "" };
       })
       .filter(
         (item: any): item is SocialNetworkItem =>
-          typeof item?.name === "string" && !!item.name.trim(),
+          typeof item?.name === "string" &&
+          !!item.name.trim() &&
+          typeof item?.url === "string" &&
+          !!item.url.trim(),
       );
   };
 

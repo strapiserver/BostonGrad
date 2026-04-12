@@ -24,6 +24,9 @@ import { IMassDirText, IMassDirTextId, IMassRate, IPm } from "../../types/mass";
 
 import { addHeadersToSearchIndex, addPathsToSitemap } from "../../cache/cache";
 
+const ENABLE_LEGACY_MONITORING_PAGES =
+  process.env.NEXT_PUBLIC_ENABLE_LEGACY_MONITORING_PAGES === "true";
+
 const isSell = true;
 
 type Props = {
@@ -50,6 +53,9 @@ export const getStaticProps = async ({
 }: {
   params: { slug: string };
 }) => {
+  if (!ENABLE_LEGACY_MONITORING_PAGES) {
+    return { notFound: true };
+  }
   const { slug } = params;
   const massDirTextId = convertSlugIntoMassDirText(slug, isSell);
 
@@ -126,6 +132,9 @@ export const getStaticProps = async ({
 ////////////////////////////
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  if (!ENABLE_LEGACY_MONITORING_PAGES) {
+    return { paths: [], fallback: false };
+  }
   const massDirTextIds = await loadMassDirTextIds({ isSell });
 
   const paths = massDirTextIds.map((mdtid) => ({

@@ -32,6 +32,9 @@ import {
 } from "../../types/map";
 import { minRatesMap } from "../../services/utils";
 
+const ENABLE_LEGACY_MONITORING_PAGES =
+  process.env.NEXT_PUBLIC_ENABLE_LEGACY_MONITORING_PAGES === "true";
+
 // начиная со скольки курсов на направление показываем
 const diagEnabled =
   process.env.DEBUG_EXCHANGER_MAP === "true" ||
@@ -96,6 +99,9 @@ const buildCopy = (city: ICity, cityText?: IDirText | null) => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
+  if (!ENABLE_LEGACY_MONITORING_PAGES) {
+    return { notFound: true };
+  }
   const requestedSlug = normalizeCitySlug(params?.city);
   const currentLocale = "ru";
   diagLog("map.getStaticProps.start", {
@@ -352,6 +358,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  if (!ENABLE_LEGACY_MONITORING_PAGES) {
+    return { paths: [], fallback: false };
+  }
   diagLog("map.getStaticPaths", {
     paths: [DEFAULT_CITY_SLUG],
     fallback: "blocking",

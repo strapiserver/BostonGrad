@@ -3,17 +3,12 @@ import { VStack, Box, Divider } from "@chakra-ui/react";
 import { useAppDispatch } from "../../redux/hooks";
 import { clean } from "../../redux/mainReducer";
 import { useRouter } from "next/router";
-import { IMainText, ICard, IMainSingle } from "../../types/pages";
-import { IPopularDirRates } from "../../types/rates";
-import { IPm } from "../../types/selector";
-import { IDirText } from "../../types/exchange";
+import { ICard, IMainSingle } from "../../types/pages";
 import MassSelector from "./massSelectorSwiper";
 import Advantages from "./advantages";
 import CustomTitle from "../shared/CustomTitle";
-import AllReviews from "./allReviews";
-import { IExchangerReview } from "../../types/exchanger";
 import GeneralStats from "./GeneralStats";
-import Cards from "./cards";
+import UniPreview from "./uni_preview";
 import CityMapView from "../map";
 import { MapHeadings, CityCashSection } from "../map/types";
 import { ClosestCityMatch } from "../map/helper";
@@ -24,6 +19,11 @@ import { IImage } from "../../types/selector";
 type SocialNetworkItem = {
   name: string;
   icon: IImage | null;
+  url: string;
+};
+type CountryOption = {
+  id: string;
+  name: string;
 };
 
 const mainMapCity: ICity = {
@@ -51,24 +51,14 @@ const mainMapCashSections: CityCashSection[] = [];
 const mainMapClosestCities: ClosestCityMatch[] = [];
 
 const MainPageContent = ({
-  popularPms,
-  popularRates,
-  mainTexts,
   cards,
   mainSingle,
-  rootText,
-  reviews,
   countries,
   socialNetworks,
 }: {
-  popularPms?: IPm[] | null;
-  popularRates?: IPopularDirRates | null;
-  mainTexts?: IMainText[] | null;
   cards?: ICard[] | null;
   mainSingle?: IMainSingle | null;
-  rootText?: IDirText | null;
-  reviews?: IExchangerReview[] | null;
-  countries?: string[] | null;
+  countries?: CountryOption[] | null;
   socialNetworks?: SocialNetworkItem[] | null;
 }) => {
   const router = useRouter();
@@ -92,7 +82,7 @@ const MainPageContent = ({
       ) : null}
 
       <Box mt="-100">
-        <Cards cards={cards} />
+        <UniPreview cards={cards} />
       </Box>
 
       <Divider mt="4" />
@@ -113,17 +103,6 @@ const MainPageContent = ({
       />
 
       <Advantages />
-
-      <CustomTitle
-        fontSize={{ base: "xl", lg: "4xl" }}
-        as="h2"
-        mb="0"
-        ml="8"
-        title={"Репутация и доверие"}
-        subtitle={"Реальные отзывы клиентов"}
-      />
-
-      <AllReviews reviews={reviews || []} />
 
       <CustomTitle
         as="h2"

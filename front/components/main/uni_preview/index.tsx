@@ -3,7 +3,6 @@ import {
   Text,
   HStack,
   VStack,
-  useBreakpointValue,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -17,33 +16,34 @@ const truncateTo100 = (text?: string) => {
   return text.length > 100 ? `${text.slice(0, 100)}...` : text;
 };
 
-const Cards = ({ cards }: { cards?: ICard[] | null }) => {
+const UniPreview = ({ cards }: { cards?: ICard[] | null }) => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const dragState = useRef({ isDown: false, startX: 0, startLeft: 0 });
   const [isDragging, setIsDragging] = useState(false);
-  const cardWidth = useBreakpointValue({
+  const cardWidth = {
     base: "85px",
     md: "170px",
     lg: "340px",
-  });
-  const cardHeight = useBreakpointValue({
+  };
+  const cardHeight = {
     base: "120px",
     md: "240px",
     lg: "480px",
-  });
-  const cardStep = useBreakpointValue({ base: 101, md: 186, lg: 376 }) || 376;
-  const horizontalPad = useBreakpointValue({
+  };
+  const horizontalPad = {
     base: "calc(50vw - 52.5px)",
     md: "calc(50vw - 95px)",
     lg: "calc(50vw - 180px)",
-  });
+  };
 
   if (!cards?.length) return null;
 
   const scrollByCard = (direction: "left" | "right") => {
     const node = scrollRef.current;
     if (!node) return;
-    const delta = direction === "left" ? -cardStep : cardStep;
+    const card = node.querySelector("[data-card-idx]") as HTMLElement | null;
+    const deltaBase = card ? card.offsetWidth + 16 : node.clientWidth * 0.8;
+    const delta = direction === "left" ? -deltaBase : deltaBase;
     node.scrollBy({ left: delta, behavior: "smooth" });
   };
 
@@ -192,8 +192,8 @@ const Cards = ({ cards }: { cards?: ICard[] | null }) => {
                     >
                       <CustomImage
                         img={card.image}
-                        w={cardWidth}
-                        h={cardHeight}
+                        w="100%"
+                        h="100%"
                         adaptiveQuality
                         customAlt={card.header || card.slug}
                       />
@@ -226,4 +226,4 @@ const Cards = ({ cards }: { cards?: ICard[] | null }) => {
   );
 };
 
-export default Cards;
+export default UniPreview;

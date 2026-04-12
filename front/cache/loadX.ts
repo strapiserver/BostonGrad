@@ -53,6 +53,8 @@ import normalize from "../services/normalizer";
 //import { p2pMakerQuery } from "../pages/p2p/queries";
 
 const locale = "ru";
+const legacyMonitoringEnabled =
+  process.env.NEXT_PUBLIC_ENABLE_LEGACY_MONITORING_PAGES === "true";
 
 const cmsFetcher = initCMSFetcher();
 const parserFetcher = initParserFetcher();
@@ -238,6 +240,7 @@ export const loadArticle = (code: string) =>
 
 export const loadPossibleDirs = () =>
   cachedFetch("dirs", TTL.fast, async () => {
+    if (!legacyMonitoringEnabled) return {};
     const dirs = (await parserFetcher("dirs")) as
       | Record<string, number>
       | null; // {"BTC_USDTTRC20": 119, "BTC_ETH": 34, ...}
@@ -262,6 +265,7 @@ export const limitedPossibleDirs = (
 };
 
 export const loadPms = async () => {
+  if (!legacyMonitoringEnabled) return [];
   const pms = await cachedFetch("pms", TTL.slow, async () => {
     try {
       const selector = await cmsFetcher(selectorQuery);
@@ -342,6 +346,7 @@ export const loadBlog = async () => {
 
 export const loadCities = () =>
   cachedFetch("cities", TTL.slow, async () => {
+    if (!legacyMonitoringEnabled) return [];
     const res = await fetchCMSWithServiceFallback(citiesQuery);
 
     const cities = (Array.isArray(res) ? res : res?.cities || []) as ICity[];
@@ -422,6 +427,7 @@ export const loadMassDirTextIds = ({ isSell }: { isSell: boolean }) =>
     `massDirTexts_${locale}_${isSell ? "sell" : "buy"}`,
     TTL.slow,
     async () => {
+      if (!legacyMonitoringEnabled) return [];
       const massDirTextIds = (await cmsFetcher(massDirTextIdsQuery, {
         isSell,
       })) as IMassDirTextId[];

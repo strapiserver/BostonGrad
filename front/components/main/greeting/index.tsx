@@ -8,6 +8,11 @@ import OverlayContent from "./OverlayContent";
 type SocialNetworkItem = {
   name: string;
   icon: IImage | null;
+  url: string;
+};
+type CountryOption = {
+  id: string;
+  name: string;
 };
 
 export default function GreetingImage({
@@ -16,7 +21,7 @@ export default function GreetingImage({
   socialNetworks,
 }: {
   mainSingle: IMainSingle;
-  countries: string[];
+  countries: CountryOption[];
   socialNetworks: SocialNetworkItem[];
 }) {
   const ambientColor = useColorModeValue(
@@ -55,10 +60,7 @@ export default function GreetingImage({
       <Box position="relative" zIndex="1" w="100%">
         {mainSingle.image ? (
           <Box position="relative" w="100%" overflow="hidden">
-            <Box
-              position="relative"
-              mt={mediaShiftTop}
-            >
+            <Box position="relative" mt={mediaShiftTop}>
               <Box
                 as="img"
                 src={resolveMediaUrl(mainSingle.image.url)}

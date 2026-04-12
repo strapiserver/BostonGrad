@@ -8,6 +8,11 @@ import Forms from "../form";
 type SocialNetworkItem = {
   name: string;
   icon: IImage | null;
+  url: string;
+};
+type CountryOption = {
+  id: string;
+  name: string;
 };
 
 export default function OverlayContent({
@@ -22,7 +27,7 @@ export default function OverlayContent({
   subtitle?: string;
   benefits?: IMainBenefit[];
   contentOffsetTop?: { base: number; md: string; lg: string };
-  countries?: string[];
+  countries?: CountryOption[];
   socialNetworks?: SocialNetworkItem[];
 }) {
   return (

@@ -1049,6 +1049,16 @@ export const FAQsQuery = gql`
   }
 `;
 
+export const createLeadMutation = gql`
+  mutation CreateLead($data: LeadInput!) {
+    createLead(data: $data) {
+      data {
+        id
+      }
+    }
+  }
+`;
+
 export const createP2POfferMutation = gql`
   mutation createP2POffer($data: P2POfferInput!) {
     createP2POffer(data: $data) {

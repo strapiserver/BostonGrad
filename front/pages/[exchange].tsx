@@ -26,6 +26,9 @@ import { IMassDirTextId } from "../types/mass";
 import { initParserFetcher } from "../services/fetchers";
 import { ParserCityDirections } from "../types/map";
 
+const ENABLE_LEGACY_MONITORING_PAGES =
+  process.env.NEXT_PUBLIC_ENABLE_LEGACY_MONITORING_PAGES === "true";
+
 const ExchangePage = (props: {
   seo: ISEO;
   givePmData: IPmData | null;
@@ -44,6 +47,9 @@ export async function getStaticProps({
 }: {
   params: { exchange: string };
 }) {
+  if (!ENABLE_LEGACY_MONITORING_PAGES) {
+    return { notFound: true };
+  }
   try {
     const { exchange } = params;
     const [slug, cityParam] = exchangeToSlugCity(exchange);
@@ -173,6 +179,9 @@ export async function getStaticProps({
 //////////////////////////////////////////////////////////////////////////////
 
 export async function getStaticPaths() {
+  if (!ENABLE_LEGACY_MONITORING_PAGES) {
+    return { paths: [], fallback: false };
+  }
   const parserFetcher = initParserFetcher();
   const [cities, cityDirectionsData, pms, allPossibleDirs] = await Promise.all([
     loadCities(),

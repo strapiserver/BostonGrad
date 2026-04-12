@@ -8,7 +8,7 @@ import {
   MenuList,
   Text,
 } from "@chakra-ui/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { RiArrowDownSLine } from "react-icons/ri";
 import { IImage } from "../../types/selector";
 import CustomImage from "./CustomImage";
@@ -35,6 +35,22 @@ export default function CustomSelect({
 }: CustomSelectProps) {
   const initialValue = defaultValue || "";
   const [value, setValue] = useState(initialValue);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (value) return;
+    if (defaultValue) {
+      setValue(defaultValue);
+      return;
+    }
+    if (options.length > 0) {
+      setValue(options[0].value);
+    }
+  }, [defaultValue, options, value]);
 
   const selectedOption = useMemo(() => {
     if (!value) return "";
@@ -47,6 +63,18 @@ export default function CustomSelect({
   return (
     <>
       <input type="hidden" name={name} value={value} />
+      {!mounted ? (
+        <Button
+          w="100%"
+          justifyContent="space-between"
+          textAlign="left"
+          rightIcon={<RiArrowDownSLine />}
+          fontWeight="normal"
+          {...props}
+        >
+          {placeholder || ""}
+        </Button>
+      ) : (
       <Menu matchWidth placement="bottom-start">
         <MenuButton
           as={Button}
@@ -84,6 +112,7 @@ export default function CustomSelect({
           ))}
         </MenuList>
       </Menu>
+      )}
     </>
   );
 }

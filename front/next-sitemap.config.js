@@ -49,7 +49,7 @@ function resolveAllowCrawlers() {
 const allowCrawlers = resolveAllowCrawlers();
 
 module.exports = {
-  siteUrl: process.env.SITE_URL || "https://p2pie.com",
+  siteUrl: process.env.SITE_URL || "https://bostongrad.com",
   generateRobotsTxt: true,
   robotsTxtOptions: allowCrawlers
     ? {
@@ -64,16 +64,16 @@ module.exports = {
             allow: "/",
           },
         ],
-        additionalSitemaps: ["https://p2pie.com/sitemap.xml"],
+        additionalSitemaps: ["https://bostongrad.com/sitemap.xml"],
         transformRobotsTxt: async () =>
           [
             "User-agent: Yandex",
             "Clean-param: utm_medium&utm_source&utm_campaign&ybaip&ctime",
-            "Sitemap: https://p2pie.com/sitemap.xml",
+            "Sitemap: https://bostongrad.com/sitemap.xml",
             "Disallow: /cdn-cgi/",
             "",
             "User-agent: *",
-            "Sitemap: https://p2pie.com/sitemap.xml",
+            "Sitemap: https://bostongrad.com/sitemap.xml",
             "",
           ].join("\n"),
       }
