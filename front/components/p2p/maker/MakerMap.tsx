@@ -69,7 +69,7 @@ export default function MakerMap({
     [],
   );
 
-  const [peach200, bg100, bg300, bg500, bg600, bg700, bg800, bg900] = useToken(
+  const [violet400, bg100, bg300, bg500, bg600, bg700, bg800, bg900] = useToken(
     "colors",
     [
       "violet.600",
@@ -86,7 +86,7 @@ export default function MakerMap({
   const mapStyles = useMemo(
     () =>
       createMapStyles({
-        peach200,
+        violet400,
         bg100,
         bg300,
         bg500,
@@ -95,7 +95,7 @@ export default function MakerMap({
         bg800,
         bg900,
       }),
-    [peach200, bg100, bg300, bg500, bg600, bg700, bg800, bg900],
+    [violet400, bg100, bg300, bg500, bg600, bg700, bg800, bg900],
   );
 
   const mapOptions = useMemo<google.maps.MapOptions>(

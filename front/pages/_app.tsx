@@ -79,7 +79,7 @@ const DotLottieReact = dynamic(
 );
 
 const lightOnlyColorModeManager = {
-  type: "localStorage",
+  type: "localStorage" as const,
   get: () => "light",
   set: () => {},
 };
@@ -197,7 +197,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <ChakraProvider
         theme={theme}
-        colorModeManager={lightOnlyColorModeManager}
+        colorModeManager={lightOnlyColorModeManager as any}
       >
         <Provider store={store}>
           <Layout>

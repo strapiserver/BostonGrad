@@ -10,7 +10,7 @@ const useInternal =
 
 export const base = normalizeEnvValue(process.env.NEXT_PUBLIC_BASE);
 const normalizedIndex = normalizeEnvValue(process.env.NEXT_PUBLIC_INDEX);
-export const index = normalizedIndex == "0" ? "" : normalizedIndex;
+export const index = !normalizedIndex || normalizedIndex == "0" ? "" : normalizedIndex;
 
 export const converterLinkPROD = `https://converter${index}.${base}`;
 export const serverLinkPROD = `https://server${index}.${base}`;

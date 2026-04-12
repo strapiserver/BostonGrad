@@ -276,7 +276,7 @@ const MassSwiper = forwardRef<MassSwiperHandle, MassSwiperProps>(
             dragTransition={{
               power: inertiaPower,
               timeConstant: inertiaTimeConstant,
-              modifyTarget: (target) => snapToNearest(target),
+              modifyTarget: (target: number) => snapToNearest(target),
             }}
             onDragTransitionEnd={() => set(items[getIndex()].id)}
             animate={controls}

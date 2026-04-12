@@ -300,9 +300,6 @@ export default function LeaveReview() {
         <SentimentButtons
           sentiment={sentiment}
           isDisabled={hasSubmitted}
-          onSelect={(value) =>
-            dispatch(setReviewSentiment({ exchangerId, sentiment: value }))
-          }
         />
       </HStack>
       <Divider my="4" />
@@ -324,6 +321,9 @@ export default function LeaveReview() {
           sentiment={sentiment}
           selectedCategoryIds={selectedCategoryIds}
           onToggleCategory={handleToggleCategory}
+          onSentimentSelect={(value) =>
+            dispatch(setReviewSentiment({ exchangerId, sentiment: value }))
+          }
           isExchangeDone={isExchangeDone}
           gossip={gossip}
           onToggleExchangeDone={(value) =>
