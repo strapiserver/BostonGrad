@@ -1,18 +1,11 @@
-import { IPmPairs } from "../../types/exchange";
 import { IArticle } from "../../types/pages";
-import Article from "../../components/articles/pmArticle";
 import { addArticleCrossLinking } from "../../components/articles/pmArticle/helper";
-import { IPm } from "../../types/selector";
 import { ISEO } from "../../types/general";
 import { nullSeo } from "../../components/shared/UniversalSeo";
 
-import { getSlugToCodes } from "../../cache/helper";
 import {
-  limitedPossibleDirs,
   loadArticle,
   loadArticleCodes,
-  loadPms,
-  loadPossibleDirs,
   TTL,
 } from "../../cache/loadX";
 import { addPathsToSitemap } from "../../cache/cache";
@@ -21,22 +14,29 @@ import GeneralArticle from "../../components/articles/generalArticle";
 const emptyProps = async () => ({
   props: {
     seo: nullSeo,
-    pm: null,
     article: null,
-    otherDirs: null,
   },
   revalidate: TTL.slow,
 });
 
-const ArticlePage = (props: {
-  seo: ISEO;
-  pm: IPm | null;
-  article: IArticle | null;
-  otherDirs: { buy: IPmPairs[]; sell: IPmPairs[] } | null;
-}) => {
-  if (props.article?.text)
-    return <GeneralArticle article={props.article} seo={props.seo} />;
-  return <Article {...props} />;
+const articleToText = (article: IArticle): IArticle => {
+  if (article.text) return article;
+  const chapters = Array.isArray(article.chapters) ? article.chapters : [];
+  const fallbackText = chapters
+    .map((ch) => {
+      const title = String(ch?.title || "").trim();
+      const text = String(ch?.text || "").trim();
+      if (!title && !text) return "";
+      return title ? `## ${title}\n\n${text}`.trim() : text;
+    })
+    .filter(Boolean)
+    .join("\n\n");
+
+  return { ...article, text: fallbackText };
+};
+
+const ArticlePage = (props: { seo: ISEO; article: IArticle | null }) => {
+  return <GeneralArticle article={props.article} seo={props.seo} />;
 };
 
 export async function getStaticProps({ params }: { params: { code: string } }) {
@@ -58,75 +58,16 @@ export async function getStaticProps({ params }: { params: { code: string } }) {
       updatedAt: article.updatedAt || new Date().toISOString(),
     } as ISEO;
 
-    if (article?.text) {
-      return {
-        props: {
-          seo: seo || nullSeo,
-          article: article || null,
-        },
-        revalidate: TTL.slowest,
-      };
-    }
-    const [articleCodes, pms, allPossibleDirs] = await Promise.all([
-      loadArticleCodes(),
-      loadPms(),
-      loadPossibleDirs(),
-    ]);
-    const dirs = limitedPossibleDirs(allPossibleDirs, "low");
-
-    const slugToCodes = getSlugToCodes(dirs, pms);
-
-    if (!pms?.length || !slugToCodes) {
-      console.warn(
-        `[getStaticProps] No pms or slugToCodes found for code: ${params.code}`
-      );
-      return emptyProps();
-    }
-
-    const articlePms = pms.filter(
-      (pm) =>
-        pm.en_name.toLowerCase().replaceAll(" ", "-") == code.toLowerCase()
-    );
-
-    const filteredDirs = Object.values(slugToCodes).filter((dir) => {
-      const [giveCode, getCode] = dir.split("_");
-      return (
-        articlePms.find((pm) => pm.code === giveCode) ||
-        articlePms.find((pm) => pm.code === getCode)
-      );
-    });
-
-    const otherDirs = filteredDirs.reduce(
-      (res: { buy: IPmPairs[]; sell: IPmPairs[] }, dir: string) => {
-        const slug = Object.keys(slugToCodes).find(
-          (key) => slugToCodes[key] === dir
-        );
-        const givePm = pms.find((pm) => pm.code === dir.split("_")[0]);
-        const getPm = pms.find((pm) => pm.code === dir.split("_")[1]);
-        const pmPair = { slug, givePm, getPm } as IPmPairs;
-
-        return givePm?.en_name.toLowerCase() ===
-          articlePms[0]?.en_name.toLowerCase()
-          ? { sell: [...res.sell], buy: [...res.buy, pmPair] }
-          : { buy: [...res.buy], sell: [...res.sell, pmPair] };
-      },
-      { buy: [], sell: [] }
-    );
-
-    const linkedArticle = await addArticleCrossLinking(
-      article,
-      articleCodes,
-      pms
-    );
+    const articleCodes = await loadArticleCodes();
+    const linkedArticle = await addArticleCrossLinking(article, articleCodes);
+    const textArticle = articleToText(linkedArticle);
 
     return {
       props: {
         seo: seo || nullSeo,
-        pm: articlePms[0] || null,
-        article: linkedArticle || null,
-        otherDirs: otherDirs || null,
+        article: textArticle || null,
       },
-      revalidate: TTL.slow,
+      revalidate: TTL.slowest,
     };
   } catch (e) {
     console.error("[getStaticProps] Error:", e);
