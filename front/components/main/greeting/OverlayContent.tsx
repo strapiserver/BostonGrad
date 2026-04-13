@@ -1,8 +1,6 @@
 import { Box, Text, VStack } from "@chakra-ui/react";
 import React from "react";
-import { IMainBenefit } from "../../../types/pages";
 import { IImage } from "../../../types/selector";
-import Benefits from "./Benefits";
 import Forms from "../form";
 
 type SocialNetworkItem = {
@@ -18,64 +16,111 @@ type CountryOption = {
 export default function OverlayContent({
   title,
   subtitle,
-  benefits,
   contentOffsetTop,
   countries,
   socialNetworks,
 }: {
   title?: string;
   subtitle?: string;
-  benefits?: IMainBenefit[];
   contentOffsetTop?: { base: number; md: string; lg: string };
   countries?: CountryOption[];
   socialNetworks?: SocialNetworkItem[];
 }) {
   return (
     <Box
-      position="absolute"
-      top={20}
-      bottom={0}
+      position={{ base: "relative", md: "absolute" }}
+      top={{ base: "0", md: "20" }}
+      bottom={{ base: "auto", md: "0" }}
       left={0}
-      w="50vw"
-      pr="100px"
-      minW="600px"
+      w={{ base: "100%", md: "50vw" }}
+      pr={{ base: "0", md: "100px" }}
+      minW={{ base: "0", md: "600px" }}
       zIndex="3"
-      bg="rgba(61, 17, 17, 0.8)"
-      clipPath="polygon(0 0, 100% 0, 88% 100%, 0 100%)"
+      bg={{
+        base: "linear-gradient(165deg, #5b1f1f 0%, #431616 100%)",
+        md: "rgba(61, 17, 17, 0.8)",
+      }}
+      clipPath={{ base: "none", md: "polygon(0 0, 100% 0, 88% 100%, 0 100%)" }}
+      borderTopRadius={{ base: "0", md: "0" }}
+      borderTop={{ base: "1px solid rgba(255,210,130,0.5)", md: "none" }}
+      borderRight={{ base: "1px solid rgba(255,255,255,0.1)", md: "none" }}
+      boxShadow={{
+        base: "0 -10px 28px rgba(0,0,0,0.35), 0 20px 45px rgba(0,0,0,0.2)",
+        md: "none",
+      }}
+      backdropFilter={{ base: "blur(6px)", md: "none" }}
       color="white"
-      fontSize={{ base: "lg", md: "2xl" }}
+      fontSize={{ base: "md", md: "2xl" }}
       fontWeight="bold"
-      textTransform="uppercase"
-      letterSpacing="widest"
+      textTransform="none"
+      letterSpacing="normal"
       pointerEvents="auto"
-      px="6"
-      py="8"
+      px={{ base: "7", md: "6" }}
+      py={{ base: "8", md: "8" }}
       pt={contentOffsetTop}
       overflowY="auto"
     >
-      <Box w="88%">
-        <VStack align="stretch" spacing="6">
+      <Box w={{ base: "100%", md: "88%" }}>
+        <Box
+          h="2px"
+          w="100%"
+          bgGradient="linear(to-r, transparent 0%, rgba(246,216,148,0.2) 32%, rgba(255,226,150,0.95) 50%, rgba(246,216,148,0.2) 68%, transparent 100%)"
+          mb={{ base: "5", md: "4" }}
+          position="relative"
+          opacity={0.95}
+          _after={{
+            content: '""',
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translateX(-50%)",
+            w: "10px",
+            h: "10px",
+            borderRadius: "full",
+            bg: "radial-gradient(circle, #ffe7a8 0%, #f6d894 58%, rgba(246,216,148,0) 100%)",
+            boxShadow: "0 0 14px rgba(246,216,148,0.65)",
+            marginTop: "-5px",
+          }}
+          _before={{
+            content: '""',
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            w: "56px",
+            h: "14px",
+            borderRadius: "full",
+            bg: "radial-gradient(ellipse, rgba(246,216,148,0.55) 0%, rgba(246,216,148,0.18) 45%, rgba(246,216,148,0) 100%)",
+          }}
+        />
+        <VStack align="stretch" spacing={{ base: "8", md: "6" }}>
           <Text
             textAlign="left"
-            color="white"
-            fontSize={{ base: "2xl", md: "3xl", lg: "5xl" }}
-            fontWeight="700"
-            lineHeight="1.15"
-            textShadow="0 2px 10px rgba(0,0,0,0.5)"
+            color="#f6d894"
+            fontSize={{ base: "3xl", md: "3xl", lg: "5xl" }}
+            fontWeight="800"
+            lineHeight={{ base: "1.1", md: "1.15" }}
+            letterSpacing={{ base: "0.015em", md: "0.01em" }}
+            textTransform="uppercase"
+            textShadow="0 2px 0 rgba(70,20,20,0.5), 0 8px 18px rgba(0,0,0,0.45)"
+            display={{ base: "none", md: "block" }}
           >
             {title || ""}
           </Text>
           <Text
             textAlign="left"
             whiteSpace="normal"
-            color="white"
+            color="rgba(255,255,255,0.94)"
             fontSize={{ base: "lg", md: "xl", lg: "2xl" }}
-            fontWeight="500"
-            textShadow="0 1px 8px rgba(0,0,0,0.5)"
+            fontWeight="400"
+            lineHeight={{ base: "1.35", md: "1.35" }}
+            letterSpacing={{ base: "0.025em", md: "0.02em" }}
+            textTransform="uppercase"
+            textShadow="0 1px 8px rgba(0,0,0,0.35)"
+            display={{ base: "none", md: "block" }}
           >
             {subtitle || ""}
           </Text>
-          <Benefits benefits={benefits} />
           <Forms
             countries={countries || []}
             socialNetworks={socialNetworks || []}

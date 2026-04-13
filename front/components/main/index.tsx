@@ -81,7 +81,7 @@ const MainPageContent = ({
         />
       ) : null}
 
-      <Box mt="-100">
+      <Box mt={{ base: "0", md: "-100" }}>
         <UniPreview cards={cards} />
       </Box>
 

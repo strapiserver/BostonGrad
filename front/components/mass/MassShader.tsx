@@ -4,7 +4,7 @@ import { Box } from "@chakra-ui/react";
 const MassShader = ({ direction = "top" }: { direction: "top" | "bottom" }) => {
   const [shaderColor] = useToken(
     "colors",
-    useColorModeValue(["bg.200"], ["bg.900"])
+    useColorModeValue(["bg.100"], ["bg.900"]),
   );
 
   return (

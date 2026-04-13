@@ -8,6 +8,7 @@ import {
   MenuList,
   Text,
 } from "@chakra-ui/react";
+import { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { RiArrowDownSLine } from "react-icons/ri";
 import { IImage } from "../../types/selector";
@@ -24,6 +25,8 @@ type CustomSelectProps = Omit<ButtonProps, "children"> & {
   options: Option[];
   placeholder?: string;
   defaultValue?: string;
+  autoSelectFirst?: boolean;
+  leftIcon?: ReactNode;
 };
 
 export default function CustomSelect({
@@ -31,6 +34,8 @@ export default function CustomSelect({
   options,
   placeholder,
   defaultValue,
+  autoSelectFirst = true,
+  leftIcon,
   ...props
 }: CustomSelectProps) {
   const initialValue = defaultValue || "";
@@ -47,10 +52,10 @@ export default function CustomSelect({
       setValue(defaultValue);
       return;
     }
-    if (options.length > 0) {
+    if (autoSelectFirst && options.length > 0) {
       setValue(options[0].value);
     }
-  }, [defaultValue, options, value]);
+  }, [autoSelectFirst, defaultValue, options, value]);
 
   const selectedOption = useMemo(() => {
     if (!value) return "";
@@ -72,7 +77,10 @@ export default function CustomSelect({
           fontWeight="normal"
           {...props}
         >
-          {placeholder || ""}
+          <HStack spacing="2" minW={0}>
+            {leftIcon || null}
+            <Text noOfLines={1}>{placeholder || ""}</Text>
+          </HStack>
         </Button>
       ) : (
       <Menu matchWidth placement="bottom-start">
@@ -86,12 +94,16 @@ export default function CustomSelect({
           {...props}
         >
           {selectedOption ? (
-            <HStack spacing="2">
+            <HStack spacing="2" minW={0}>
+              {leftIcon || null}
               {renderIcon(selectedOption.icon)}
-              <Text>{selectedOption.label}</Text>
+              <Text noOfLines={1}>{selectedOption.label}</Text>
             </HStack>
           ) : (
-            placeholder || ""
+            <HStack spacing="2" minW={0}>
+              {leftIcon || null}
+              <Text noOfLines={1}>{placeholder || ""}</Text>
+            </HStack>
           )}
         </MenuButton>
         <MenuList bg="white" borderColor="red.400" textAlign="left">
@@ -104,9 +116,9 @@ export default function CustomSelect({
               _focus={{ bg: "red.500", color: "white" }}
               onClick={() => setValue(option.value)}
             >
-              <HStack spacing="2">
+              <HStack spacing="2" minW={0}>
                 {renderIcon(option.icon)}
-                <Text>{option.label}</Text>
+                <Text noOfLines={1}>{option.label}</Text>
               </HStack>
             </MenuItem>
           ))}

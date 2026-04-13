@@ -3,7 +3,6 @@ import { ICard, IMainSingle } from "../types/pages";
 import UniversalSeo, { nullSeo } from "../components/shared/UniversalSeo";
 import { ISEO } from "../types/general";
 import { Box } from "@chakra-ui/react";
-import Image from "next/image";
 import gridPattern from "../public/grid.png";
 import { loadCards, loadMainSingle, TTL } from "../cache/loadX";
 import {
@@ -200,13 +199,12 @@ const Home = (props: any) => {
           zIndex={0}
           pointerEvents="none"
         >
-          <Image
-            src={gridPattern}
+          <Box
+            as="img"
+            src={gridPattern.src}
             alt="Grid background pattern"
-            width={2000}
-            height={420}
-            loading="eager"
-            style={{ width: "100vw", height: "auto" }}
+            w="100vw"
+            h="auto"
           />
         </Box>
         <MainPageContent {...props} />

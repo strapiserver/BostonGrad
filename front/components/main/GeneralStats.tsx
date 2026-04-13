@@ -55,20 +55,20 @@ export default function GeneralStats() {
     >
       <GeneralStat
         colorScheme="orange"
-        label="Обменников:"
-        value="670"
+        label="Учеников:"
+        value="67"
         icon={<RiCopperCoinLine size="1.5rem" />}
       />
       <GeneralStat
         colorScheme="purple"
-        label="Направлений:"
-        value="24 450"
+        label="Университетов:"
+        value="9"
         icon={<RiExchange2Line size="1.5rem" />}
       />
       <GeneralStat
         colorScheme="cyan"
-        label="Курсов:"
-        value="12 570 900"
+        label="Стоимость:"
+        value="от 7000$"
         icon={<RiBarChartBoxLine size="1.5rem" />}
       />
     </HStack>

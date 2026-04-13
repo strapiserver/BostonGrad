@@ -64,7 +64,7 @@ const CustomImage = ({
   const env = process.env.NODE_ENV;
   const SRC = env === "production" ? cmsLinkPROD : cmsLinkDEV;
   const qualityMode = useBreakpointValue<"low" | "medium" | "high">({
-    base: "low",
+    base: "high",
     md: "medium",
     lg: "high",
   });

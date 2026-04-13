@@ -69,15 +69,16 @@ const CityMapView = ({
   }, [dispatch, city]);
 
   const libraries = useMemo(() => ["places"], []);
+  const mapHeight = useBreakpointValue({ base: "360px", md: "480px", lg: "600px" }) || "600px";
 
   const containerStyle = useMemo(
     () => ({
       width: "100%",
-      height: "600px",
+      height: mapHeight,
       boxShadow: "5px 5px 15px 5px #222",
       borderRadius: "10px",
     }),
-    []
+    [mapHeight]
   );
 
   const mapApiKey =

@@ -2,12 +2,11 @@ import {
   Box,
   Text,
   HStack,
-  VStack,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ICard } from "../../../types/pages";
-import { Box3D, ResponsiveText } from "../../../styles/theme/custom";
+import { Box3D } from "../../../styles/theme/custom";
 import CustomImage from "../../shared/CustomImage";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 
@@ -20,19 +19,11 @@ const UniPreview = ({ cards }: { cards?: ICard[] | null }) => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const dragState = useRef({ isDown: false, startX: 0, startLeft: 0 });
   const [isDragging, setIsDragging] = useState(false);
-  const cardWidth = {
-    base: "85px",
-    md: "170px",
-    lg: "340px",
-  };
-  const cardHeight = {
-    base: "120px",
-    md: "240px",
-    lg: "480px",
-  };
+  const cardWidth = { base: "74vw", md: "280px", lg: "340px" };
+  const imageHeight = { base: "210px", md: "220px", lg: "260px" };
   const horizontalPad = {
-    base: "calc(50vw - 52.5px)",
-    md: "calc(50vw - 95px)",
+    base: "calc(50vw - 37vw)",
+    md: "calc(50vw - 150px)",
     lg: "calc(50vw - 180px)",
   };
 
@@ -100,93 +91,63 @@ const UniPreview = ({ cards }: { cards?: ICard[] | null }) => {
   return (
     <Box
       position="relative"
-      width="100vw"
-      left="50%"
-      right="50%"
-      ml="-50vw"
-      mr="-50vw"
+      width={{ base: "100%", md: "100vw" }}
+      left={{ base: "0", md: "50%" }}
+      right={{ base: "0", md: "50%" }}
+      ml={{ base: "0", md: "-50vw" }}
+      mr={{ base: "0", md: "-50vw" }}
     >
       <Box w="100%" position="relative">
         <Box
-          position="absolute"
-          left="2"
-          top="50%"
-          transform="translateY(-50%)"
-          zIndex={2}
-          bg="bg.100"
-          borderRadius="full"
-          cursor="pointer"
-          onClick={() => scrollByCard("left")}
-          p="1"
+          ref={scrollRef}
+          w={{ base: "100%", md: "100vw" }}
+          overflowX="auto"
+          scrollBehavior="smooth"
+          scrollSnapType="x mandatory"
+          px={horizontalPad}
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={onMouseUpOrLeave}
+          onMouseLeave={onMouseUpOrLeave}
+          cursor={isDragging ? "grabbing" : "grab"}
+          sx={{
+            "&::-webkit-scrollbar": { display: "none" },
+            scrollbarWidth: "none",
+            WebkitOverflowScrolling: "touch",
+          }}
         >
-          <MdChevronLeft size="1.5rem" />
-        </Box>
-        <Box
-          position="absolute"
-          right="2"
-          top="50%"
-          transform="translateY(-50%)"
-          zIndex={2}
-          bg="bg.100"
-          borderRadius="full"
-          cursor="pointer"
-          onClick={() => scrollByCard("right")}
-          p="1"
-        >
-          <MdChevronRight size="1.5rem" />
-        </Box>
-      </Box>
-      <Box
-        ref={scrollRef}
-        w="100vw"
-        overflowX="auto"
-        scrollBehavior="smooth"
-        scrollSnapType="x mandatory"
-        px={horizontalPad}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUpOrLeave}
-        onMouseLeave={onMouseUpOrLeave}
-        cursor={isDragging ? "grabbing" : "grab"}
-        sx={{
-          "&::-webkit-scrollbar": { display: "none" },
-          scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
-        }}
-      >
-        <HStack
-          w="max-content"
-          spacing="4"
-          alignItems="stretch"
-          flexWrap="nowrap"
-        >
-          {cards.map((card, idx) => (
-            <Link
-              key={card.id}
-              href={`/${card.slug}`}
-              style={{ textDecoration: "none" }}
-            >
-              <Box3D
-                data-card-idx={idx}
-                role="group"
-                minW={cardWidth}
-                maxW={cardWidth}
-                overflow="hidden"
-                borderRadius="xl"
-                boxShadow="lg"
-                flexShrink={0}
-                scrollSnapAlign="center"
-                scrollSnapStop="always"
-                cursor="pointer"
-                _hover={{ filter: "brightness(1.01)" }}
+          <HStack
+            w="max-content"
+            spacing="4"
+            alignItems="stretch"
+            flexWrap="nowrap"
+          >
+            {cards.map((card, idx) => (
+              <Link
+                key={card.id}
+                href={`/${card.slug}`}
+                style={{ textDecoration: "none" }}
               >
-                <Box h="100%">
-                  <VStack align="stretch" spacing="3" mx="0">
+                <Box3D
+                  data-card-idx={idx}
+                  role="group"
+                  minW={cardWidth}
+                  maxW={cardWidth}
+                  overflow="hidden"
+                  borderRadius="xl"
+                  boxShadow="lg"
+                  flexShrink={0}
+                  scrollSnapAlign="center"
+                  scrollSnapStop="always"
+                  cursor="pointer"
+                  _hover={{ filter: "brightness(1.01)" }}
+                >
+                  <Box h="100%">
                     <Box
-                      w={cardWidth}
-                      h={cardHeight}
+                      w="100%"
+                      h={imageHeight}
                       overflow="hidden"
-                      alignSelf="center"
+                      position="relative"
                       transition="filter 0.2s ease"
                       _groupHover={{ filter: "brightness(0.95)" }}
                     >
@@ -197,30 +158,79 @@ const UniPreview = ({ cards }: { cards?: ICard[] | null }) => {
                         adaptiveQuality
                         customAlt={card.header || card.slug}
                       />
-                    </Box>
-
-                    <VStack align="start" p={["1", "2"]} minH="200px">
+                      <Box
+                        position="absolute"
+                        inset={0}
+                        bgGradient="linear(to-t, rgba(0,0,0,0.68) 10%, rgba(0,0,0,0.05) 60%)"
+                      />
                       <Text
-                        variant="contrast"
-                        fontSize={["xs", "sm", "lg"]}
+                        position="absolute"
+                        left="3"
+                        right="3"
+                        bottom="3"
+                        color="white"
                         fontWeight="700"
+                        fontSize={{ base: "xl", md: "lg", lg: "xl" }}
+                        textShadow="0 2px 8px rgba(0,0,0,0.45)"
+                        noOfLines={2}
                       >
                         {card.header || card.slug}
                       </Text>
+                    </Box>
+                    <Box
+                      display={{ base: "none", lg: "block" }}
+                      px="3"
+                      py="3"
+                      minH="72px"
+                      bg="bg.100"
+                    >
+                      <Text fontSize="sm" color="bg.800" noOfLines={2}>
+                        {truncateTo100(card.subheader)}
+                      </Text>
+                    </Box>
+                  </Box>
+                </Box3D>
+              </Link>
+            ))}
+          </HStack>
+        </Box>
 
-                      <ResponsiveText variant="no_contrast" whiteSpace="normal">
-                        {truncateTo100(card.subheader)}{" "}
-                        <Box as="span" textDecor="underline">
-                          читать далее →
-                        </Box>
-                      </ResponsiveText>
-                    </VStack>
-                  </VStack>
-                </Box>
-              </Box3D>
-            </Link>
-          ))}
-        </HStack>
+        <Box
+          position="absolute"
+          left={{ base: "1", md: "2" }}
+          top="50%"
+          transform="translateY(-50%)"
+          zIndex={3}
+          bg="rgba(255,255,255,0.92)"
+          border="1px solid"
+          borderColor="gray.300"
+          borderRadius="full"
+          cursor="pointer"
+          onClick={() => scrollByCard("left")}
+          p={{ base: "2", md: "1" }}
+          boxShadow="md"
+          color="gray.800"
+        >
+          <MdChevronLeft size="1.25rem" />
+        </Box>
+        <Box
+          position="absolute"
+          right={{ base: "1", md: "2" }}
+          top="50%"
+          transform="translateY(-50%)"
+          zIndex={3}
+          bg="rgba(255,255,255,0.92)"
+          border="1px solid"
+          borderColor="gray.300"
+          borderRadius="full"
+          cursor="pointer"
+          onClick={() => scrollByCard("right")}
+          p={{ base: "2", md: "1" }}
+          boxShadow="md"
+          color="gray.800"
+        >
+          <MdChevronRight size="1.25rem" />
+        </Box>
       </Box>
     </Box>
   );

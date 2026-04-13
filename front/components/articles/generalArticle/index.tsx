@@ -64,6 +64,8 @@ export default function GeneralArticle({
                       color={isQuote ? quoteText : bodyTextColor}
                       my={isQuote ? 0 : "2"}
                       fontStyle={isQuote ? "italic" : "normal"}
+                      fontSize={{ base: "sm", md: "md" }}
+                      lineHeight={{ base: "1.6", md: "1.7" }}
                     >
                       {children}
                     </Text>

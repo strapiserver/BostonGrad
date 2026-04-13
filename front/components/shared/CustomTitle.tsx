@@ -1,11 +1,4 @@
-import {
-  useToken,
-  Text,
-  useColorModeValue,
-  Box,
-  Heading,
-  BoxProps,
-} from "@chakra-ui/react";
+import { useToken, Text, useColorModeValue, Box, BoxProps } from "@chakra-ui/react";
 import React from "react";
 
 type CustomTitleProps = {
@@ -29,12 +22,12 @@ export default function ({
 
   return (
     <Box
-      mt={{ base: "16", lg: "32" }}
-      mb={{ base: "8", lg: "16" }}
+      mt={{ base: "10", lg: "32" }}
+      mb={{ base: "6", lg: "16" }}
       zIndex="1"
       bgGradient={`radial-gradient(circle at 50% -10%, ${centerColor} 10%, ${peripheryColor} 70%)`}
       bgClip="text"
-      fontSize={{ base: "xl", lg: "5xl" }}
+      fontSize={{ base: "lg", lg: "5xl" }}
       w="100%"
       textAlign={"center"}
       {...props}

@@ -1,36 +1,50 @@
-import { Divider, HStack, List, ListItem, Text } from "@chakra-ui/react";
+import { Box, HStack, List, ListItem, Text } from "@chakra-ui/react";
 import React from "react";
-import { RiCheckboxCircleFill } from "react-icons/ri";
+import { FaGraduationCap } from "react-icons/fa";
+import { RiMapPin2Fill, RiCustomerService2Fill } from "react-icons/ri";
 import { IMainBenefit } from "../../../types/pages";
 
 export default function Benefits({ benefits }: { benefits?: IMainBenefit[] }) {
   if (!benefits?.length) return null;
+  const icons = [FaGraduationCap, RiMapPin2Fill, RiCustomerService2Fill];
 
   return (
-    <List spacing="2">
-      {benefits
-        .filter((item) => !!item?.text)
-        .map((item) => (
-          <ListItem key={item.id || item.text} listStyleType="none">
-            <HStack align="start" spacing="2">
-              <RiCheckboxCircleFill
-                color="white"
-                size={18}
-                style={{ marginTop: "4px", flexShrink: 0 }}
-              />
-              <Text
-                color="white"
-                fontSize={{ base: "md", md: "lg" }}
-                textShadow="0 1px 8px rgba(0,0,0,0.5)"
-                textTransform="none"
-                letterSpacing="normal"
-              >
-                {item.text}
-              </Text>
-            </HStack>
-            <Divider mt="2" borderColor="whiteAlpha.400" w="80%" />
-          </ListItem>
-        ))}
-    </List>
+    <Box
+      bg="linear-gradient(180deg, rgba(120,40,40,0.45) 0%, rgba(70,20,20,0.45) 100%)"
+      border="1px solid rgba(246,216,148,0.6)"
+      borderRadius="2xl"
+      px={{ base: "5", md: "4" }}
+      py={{ base: "4", md: "3" }}
+      boxShadow="inset 0 0 0 1px rgba(255,255,255,0.08)"
+    >
+      <List spacing={{ base: "3", md: "3" }}>
+        {benefits
+          .filter((item) => !!item?.text)
+          .map((item, idx) => {
+            const Icon = icons[idx % icons.length];
+            return (
+            <ListItem key={item.id || item.text} listStyleType="none">
+              <HStack align="start" spacing={{ base: "3", md: "2" }}>
+                <Icon
+                  color="#f6d894"
+                  size={22}
+                  style={{ marginTop: "4px", flexShrink: 0 }}
+                />
+                <Text
+                  color="white"
+                  fontSize={{ base: "lg", md: "lg" }}
+                  lineHeight={{ base: "1.3", md: "1.35" }}
+                  textShadow="0 1px 8px rgba(0,0,0,0.35)"
+                  textTransform="none"
+                  letterSpacing="normal"
+                  fontWeight="700"
+                >
+                  {item.text}
+                </Text>
+              </HStack>
+            </ListItem>
+          )})}
+      </List>
+    </Box>
   );
 }

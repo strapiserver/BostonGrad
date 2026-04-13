@@ -1,5 +1,6 @@
-import { Box, Button, Grid, Input, Text } from "@chakra-ui/react";
+import { Box, Button, Grid, Input, Text, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { RiSendPlaneFill } from "react-icons/ri";
+import { RiUser3Line, RiListSettingsLine } from "react-icons/ri";
 import CustomSelect from "../../shared/CustomSelect";
 import { IImage } from "../../../types/selector";
 import settings from "./settings.json";
@@ -138,17 +139,46 @@ export default function Forms({
   };
 
   return (
-    <Box w="100%" as="form" onSubmit={onSubmit}>
-      <Grid w="100%" gap="4" mt="4" gridTemplateColumns="1fr 1fr 1fr">
-        <Input
-          type="text"
-          name="name"
-          borderRadius="lg"
-          placeholder="Ваше имя"
-          required
-          {...fieldCommonInputStyles}
-          _placeholder={{ color: placeholderColor }}
-        />
+    <Box w="100%" as="form" onSubmit={onSubmit} textTransform="none">
+      <Text
+        color="#f6d894"
+        fontSize={{ base: "2xl", md: "xl" }}
+        fontWeight="700"
+        lineHeight="1.15"
+        mb={{ base: "4", md: "3" }}
+        textShadow="0 0 14px rgba(246,216,148,0.35)"
+      >
+        Запишитесь на летнюю программу:
+      </Text>
+      <Grid
+        w="100%"
+        gap={{ base: "3", md: "4" }}
+        mt="4"
+        gridTemplateColumns={{ base: "1fr", md: "1fr 1fr", lg: "1fr 1fr 1fr" }}
+      >
+        <InputGroup>
+          <InputLeftElement h={{ base: "52px", md: "44px" }} color="#5a2a2a">
+            <RiUser3Line />
+          </InputLeftElement>
+          <Input
+            type="text"
+            name="name"
+            borderRadius="lg"
+            placeholder="Ваше имя"
+            required
+            h={{ base: "52px", md: "44px" }}
+            pl="10"
+            bg="white"
+            color="#2d1a1a"
+            borderColor="rgba(255,255,255,0.65)"
+            _hover={{ borderColor: "rgba(255,255,255,0.9)" }}
+            _focus={{
+              borderColor: "#f6d894",
+              boxShadow: "0 0 0 1px rgba(246,216,148,0.9)",
+            }}
+            _placeholder={{ color: "rgba(45,26,26,0.6)" }}
+          />
+        </InputGroup>
         <Input
           type="text"
           name="contact_time"
@@ -167,8 +197,18 @@ export default function Forms({
         <CustomSelect
           name="kid_age"
           placeholder="Возраст ребенка"
+          autoSelectFirst={false}
+          h={{ base: "52px", md: "44px" }}
           options={ageOptions}
-          {...fieldCommonInputStyles}
+          leftIcon={<RiListSettingsLine color="#5a2a2a" />}
+          bg="white"
+          color="#2d1a1a"
+          borderColor="rgba(255,255,255,0.65)"
+          _hover={{ borderColor: "rgba(255,255,255,0.9)" }}
+          _focus={{
+            borderColor: "#f6d894",
+            boxShadow: "0 0 0 1px rgba(246,216,148,0.9)",
+          }}
         />
 
         {/* <FormLabel>Страна</FormLabel> */}
@@ -177,19 +217,39 @@ export default function Forms({
           placeholder="Страна"
           options={countryOptions}
           defaultValue={countryOptions[0]?.value}
-          {...fieldCommonInputStyles}
+          h={{ base: "52px", md: "44px" }}
+          bg="white"
+          color="#2d1a1a"
+          borderColor="rgba(255,255,255,0.65)"
+          _hover={{ borderColor: "rgba(255,255,255,0.9)" }}
+          _focus={{
+            borderColor: "#f6d894",
+            boxShadow: "0 0 0 1px rgba(246,216,148,0.9)",
+          }}
         />
 
         <CustomSelect
           name="socialnetwork"
           placeholder="Способ связи"
           options={socialNetworkOptions}
-          {...fieldCommonInputStyles}
+          h={{ base: "52px", md: "44px" }}
+          bg="white"
+          color="#2d1a1a"
+          borderColor="rgba(255,255,255,0.65)"
+          _hover={{ borderColor: "rgba(255,255,255,0.9)" }}
+          _focus={{
+            borderColor: "#f6d894",
+            boxShadow: "0 0 0 1px rgba(246,216,148,0.9)",
+          }}
         />
         <Button
-          size="md"
-          variant="primary"
-          gridColumn="span 2"
+          size={{ base: "lg", md: "md" }}
+          bgGradient="linear(to-r, #f6d894 0%, #eebc57 100%)"
+          color="#4a1c1c"
+          _hover={{ filter: "brightness(1.03)" }}
+          _active={{ filter: "brightness(0.98)" }}
+          w="100%"
+          gridColumn={{ base: "1 / -1", md: "span 2", lg: "span 1" }}
           rightIcon={<RiSendPlaneFill />}
           type="submit"
           isLoading={isSubmitting}

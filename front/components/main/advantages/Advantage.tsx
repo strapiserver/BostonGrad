@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import Image, { StaticImageData } from "next/image";
+import { StaticImageData } from "next/image";
 import { Box3D } from "../../../styles/theme/custom";
 import { useColorModeValue, Box, useBreakpointValue } from "@chakra-ui/react";
 
@@ -77,7 +77,7 @@ export default function Advantage({
           h="300px"
         />
         <Box position="relative" zIndex={1}>
-          <Image alt={alt} src={imageSrc} width={400} height={200} />
+          <Box as="img" alt={alt} src={imageSrc.src} w="100%" h="auto" />
 
           {children(isActive)}
         </Box>

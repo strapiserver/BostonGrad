@@ -70,7 +70,7 @@ const MassSelector = () => {
         timeoutsRef.current.push(timeoutId);
       });
     },
-    [clearSequence]
+    [clearSequence],
   );
 
   const checkCentered = useCallback(() => {
@@ -183,7 +183,7 @@ const MassSelector = () => {
           >
             <HStack color="white">
               <ResponsiveText color="inherit" size="xl">
-                Искать курсы
+                Искать школу
               </ResponsiveText>
               <FaSearch size="1.5rem" />
             </HStack>
