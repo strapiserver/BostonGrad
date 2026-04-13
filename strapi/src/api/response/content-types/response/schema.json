@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "responses",
+  "info": {
+    "singularName": "response",
+    "pluralName": "responses",
+    "displayName": "response",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "answer": {
+      "type": "string"
+    },
+    "question": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::question.question"
+    },
+    "lead": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::lead.lead",
+      "inversedBy": "responses"
+    }
+  }
+}

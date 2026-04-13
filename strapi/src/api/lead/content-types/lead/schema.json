@@ -1,0 +1,59 @@
+{
+  "kind": "collectionType",
+  "collectionName": "leads",
+  "info": {
+    "singularName": "lead",
+    "pluralName": "leads",
+    "displayName": "Lead",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "not_verified",
+        "new",
+        "awaiting_call",
+        "interested",
+        "ready",
+        "paid",
+        "visa_done",
+        "finished",
+        "canceled"
+      ]
+    },
+    "country": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::country.country"
+    },
+    "kid_age": {
+      "type": "integer"
+    },
+    "admin_comment": {
+      "type": "text",
+      "private": true
+    },
+    "responses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::response.response",
+      "mappedBy": "lead"
+    },
+    "userAgent": {
+      "type": "string"
+    },
+    "lead_contacts": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::lead-contact.lead-contact"
+    }
+  }
+}

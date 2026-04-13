@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "lead_contacts",
+  "info": {
+    "singularName": "lead-contact",
+    "pluralName": "lead-contacts",
+    "displayName": "lead_contact"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "socialnetwork": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::socialnetwork.socialnetwork"
+    },
+    "username": {
+      "type": "string",
+      "required": false
+    },
+    "user_id": {
+      "type": "string",
+      "required": true
+    },
+    "isBanned": {
+      "type": "boolean",
+      "default": false
+    },
+    "isCallForbidden": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

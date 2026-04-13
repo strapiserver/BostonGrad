@@ -25,6 +25,11 @@ out/
 build/
 dist/
 .cache/
+strapi/_backup/
+strapi/_backup_older/
+strapi/data/
+strapi/public/uploads/
+*.tar.gz
 
 # Coverage
 coverage/
@@ -36,3 +41,4 @@ coverage/
 # Misc
 *.swp
 *.swo
+*.tsbuildinfo

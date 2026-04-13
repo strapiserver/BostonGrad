@@ -4,16 +4,17 @@
   "info": {
     "singularName": "setting",
     "pluralName": "settings",
-    "displayName": "setting"
+    "displayName": "setting",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
-    "need_students": {
-      "type": "boolean",
-      "default": true
+    "settings": {
+      "type": "json",
+      "required": true
     }
   }
 }

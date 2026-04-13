@@ -1,0 +1,18 @@
+{
+  "kind": "singleType",
+  "collectionName": "forms",
+  "info": {
+    "singularName": "form",
+    "pluralName": "forms",
+    "displayName": "form"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "visa": {
+      "type": "string"
+    }
+  }
+}

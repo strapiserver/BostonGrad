@@ -10,19 +10,15 @@ services:
       DATABASE_FILENAME: ./data/data.db
       JWT_SECRET: ${JWT_SECRET}
       ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      API_TOKEN_SALT: ${API_TOKEN_SALT}
+      TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT}
       NODE_ENV: ${NODE_ENV}
     volumes:
       - data:/opt/app/data
       - public:/opt/app/public
     ports:
       - "1337:1337"
-    networks:
-      - my-network
 
 volumes:
   public:
   data:
-networks:
-  my-network:
-    name: my-network
-    driver: bridge

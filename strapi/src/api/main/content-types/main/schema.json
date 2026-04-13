@@ -87,6 +87,17 @@
           "localized": false
         }
       }
+    },
+    "benefit": {
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "type": "dynamiczone",
+      "components": [
+        "shared.benefit"
+      ]
     }
   }
 }
