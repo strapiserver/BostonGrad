@@ -20,7 +20,7 @@ const UniPreview = ({ cards }: { cards?: ICard[] | null }) => {
   const dragState = useRef({ isDown: false, startX: 0, startLeft: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const cardWidth = { base: "74vw", md: "280px", lg: "340px" };
-  const imageHeight = { base: "210px", md: "220px", lg: "260px" };
+  const imageHeight = { base: "210px", md: "280px", lg: "340px" };
   const horizontalPad = {
     base: "calc(50vw - 37vw)",
     md: "calc(50vw - 150px)",

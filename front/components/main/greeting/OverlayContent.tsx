@@ -1,6 +1,8 @@
 import { Box, Text, VStack } from "@chakra-ui/react";
 import React from "react";
+import { IMainBenefit } from "../../../types/pages";
 import { IImage } from "../../../types/selector";
+import Benefits from "./Benefits";
 import Forms from "../form";
 
 type SocialNetworkItem = {
@@ -17,12 +19,14 @@ export default function OverlayContent({
   title,
   subtitle,
   contentOffsetTop,
+  benefits,
   countries,
   socialNetworks,
 }: {
   title?: string;
   subtitle?: string;
   contentOffsetTop?: { base: number; md: string; lg: string };
+  benefits?: IMainBenefit[];
   countries?: CountryOption[];
   socialNetworks?: SocialNetworkItem[];
 }) {
@@ -58,7 +62,7 @@ export default function OverlayContent({
       px={{ base: "7", md: "6" }}
       py={{ base: "8", md: "8" }}
       pt={contentOffsetTop}
-      overflowY="auto"
+      overflowY={{ base: "visible", md: "auto" }}
     >
       <Box w={{ base: "100%", md: "88%" }}>
         <Box
@@ -121,6 +125,7 @@ export default function OverlayContent({
           >
             {subtitle || ""}
           </Text>
+          <Benefits benefits={benefits} />
           <Forms
             countries={countries || []}
             socialNetworks={socialNetworks || []}

@@ -76,6 +76,45 @@ export default function Forms({
     }
   };
 
+  const withFacebookStartCode = (url: string, startCode?: string) => {
+    if (!startCode) return url;
+    try {
+      const parsed = new URL(url);
+      const host = parsed.hostname.toLowerCase();
+      const isMessenger =
+        host === "m.me" ||
+        host === "www.m.me" ||
+        host.endsWith(".facebook.com") ||
+        host === "messenger.com" ||
+        host.endsWith(".messenger.com");
+      if (!isMessenger) return url;
+      parsed.searchParams.set("ref", startCode);
+      return parsed.toString();
+    } catch {
+      return url;
+    }
+  };
+
+  const withInstagramStartCode = (url: string, startCode?: string) => {
+    if (!startCode) return url;
+    try {
+      const parsed = new URL(url);
+      const host = parsed.hostname.toLowerCase();
+      const isInstagram =
+        host === "ig.me" ||
+        host === "www.ig.me" ||
+        host === "instagram.com" ||
+        host === "www.instagram.com";
+      if (!isInstagram) return url;
+      const existing = parsed.searchParams.get("text");
+      const prefix = existing ? `${existing}\n` : "";
+      parsed.searchParams.set("text", `${prefix}START ${startCode}`);
+      return parsed.toString();
+    } catch {
+      return url;
+    }
+  };
+
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
@@ -93,7 +132,11 @@ export default function Forms({
       setError("Выберите социальную сеть");
       return;
     }
-    if (!name || !kidAgeRaw || !country) return;
+    if (!kidAgeRaw) {
+      setError("Выберите возраст ребенка");
+      return;
+    }
+    if (!name || !country) return;
 
     if (typeof window !== "undefined") {
       const lastSubmitTs = Number(window.localStorage.getItem("lead_submit_ts") || "0");
@@ -127,8 +170,14 @@ export default function Forms({
       }
       if (typeof window !== "undefined") {
         const startCode = payload?.leadStartCode || payload?.telegramStartCode;
-        const targetUrl = withWhatsAppStartCode(
-          withTelegramStartCode(socialNetworkUrl, startCode),
+        const targetUrl = withInstagramStartCode(
+          withFacebookStartCode(
+            withWhatsAppStartCode(
+              withTelegramStartCode(socialNetworkUrl, startCode),
+              startCode,
+            ),
+            startCode,
+          ),
           startCode,
         );
         window.open(targetUrl, "_blank", "noopener,noreferrer");
@@ -154,7 +203,7 @@ export default function Forms({
         w="100%"
         gap={{ base: "3", md: "4" }}
         mt="4"
-        gridTemplateColumns={{ base: "1fr", md: "1fr 1fr", lg: "1fr 1fr 1fr" }}
+        gridTemplateColumns={{ base: "1fr", md: "1fr 1fr" }}
       >
         <InputGroup>
           <InputLeftElement h={{ base: "52px", md: "44px" }} color="#5a2a2a">
@@ -249,7 +298,7 @@ export default function Forms({
           _hover={{ filter: "brightness(1.03)" }}
           _active={{ filter: "brightness(0.98)" }}
           w="100%"
-          gridColumn={{ base: "1 / -1", md: "span 2", lg: "span 1" }}
+          gridColumn={{ base: "1 / -1", md: "1 / -1" }}
           rightIcon={<RiSendPlaneFill />}
           type="submit"
           isLoading={isSubmitting}

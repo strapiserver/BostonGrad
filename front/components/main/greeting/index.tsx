@@ -121,6 +121,7 @@ export default function GreetingImage({
                 title={mainSingle.title}
                 subtitle={mainSingle.subtitle}
                 contentOffsetTop={overlayContentOffsetTop}
+                benefits={mainSingle.benefit}
                 countries={countries}
                 socialNetworks={socialNetworks}
               />
