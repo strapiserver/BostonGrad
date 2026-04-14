@@ -119,6 +119,10 @@ export default function Forms({
     e.preventDefault();
     if (isSubmitting) return;
     setError("");
+    const openedWindow =
+      typeof window !== "undefined"
+        ? window.open("about:blank", "_blank", "noopener,noreferrer")
+        : null;
 
     const formData = new FormData(e.currentTarget);
     const name = String(formData.get("name") || "").trim();
@@ -129,18 +133,24 @@ export default function Forms({
     const socialNetworkUrl = normalizeExternalUrl(socialNetworkUrlRaw);
 
     if (!socialNetworkUrl) {
+      if (openedWindow) openedWindow.close();
       setError("Выберите социальную сеть");
       return;
     }
     if (!kidAgeRaw) {
+      if (openedWindow) openedWindow.close();
       setError("Выберите возраст ребенка");
       return;
     }
-    if (!name || !country) return;
+    if (!name || !country) {
+      if (openedWindow) openedWindow.close();
+      return;
+    }
 
     if (typeof window !== "undefined") {
       const lastSubmitTs = Number(window.localStorage.getItem("lead_submit_ts") || "0");
       if (Date.now() - lastSubmitTs < submitCooldownMs) {
+        if (openedWindow) openedWindow.close();
         setError("Подождите немного перед повторной отправкой");
         return;
       }
@@ -180,8 +190,15 @@ export default function Forms({
           ),
           startCode,
         );
-        window.open(targetUrl, "_blank", "noopener,noreferrer");
+        if (openedWindow) {
+          openedWindow.location.href = targetUrl;
+        } else {
+          window.location.href = targetUrl;
+        }
       }
+    } catch {
+      if (openedWindow) openedWindow.close();
+      setError("Не удалось открыть чат. Попробуйте снова.");
     } finally {
       setIsSubmitting(false);
     }
