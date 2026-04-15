@@ -96,6 +96,32 @@ const CREATE_RESPONSE = gql`
   }
 `;
 
+const CREATE_LEAD = gql`
+  mutation CreateLead($data: LeadInput!) {
+    createLead(data: $data) {
+      data { id }
+    }
+  }
+`;
+
+const LEAD_BY_IG_USER_QUERY = gql`
+  query LeadByInstagramUser($userId: String!, $socialName: String!) {
+    leads(
+      filters: {
+        lead_contacts: {
+          user_id: { eq: $userId }
+          socialnetwork: { name: { eqi: $socialName } }
+        }
+      }
+      pagination: { start: 0, limit: 1 }
+    ) {
+      data {
+        id
+      }
+    }
+  }
+`;
+
 let cachedJwt = null;
 let cachedExpMs = 0;
 
@@ -245,8 +271,33 @@ const createResponse = async ({ leadId, questionId, answer }) => {
   });
 };
 
+const createLead = async ({ name, userAgent = 'instagram' }) => {
+  const created = await requestAsService(CREATE_LEAD, {
+    data: {
+      name: String(name || '').trim() || 'Instagram lead',
+      status: 'new',
+      userAgent: String(userAgent || 'instagram'),
+    },
+  });
+  const id = created?.createLead?.data?.id;
+  if (!id) throw new Error('createLead returned empty id');
+  return String(id);
+};
+
+const getLeadByInstagramUserId = async (userId) => {
+  const data = await requestAsService(LEAD_BY_IG_USER_QUERY, {
+    userId: String(userId),
+    socialName: instagramSocialnetworkName,
+  });
+  const row = Array.isArray(data?.leads?.data) ? data.leads.data[0] : null;
+  if (!row?.id) return null;
+  return getLeadById(String(row.id));
+};
+
 module.exports = {
   getLeadById,
+  getLeadByInstagramUserId,
+  createLead,
   getQuestions,
   ensureInstagramLeadContact,
   createResponse,

@@ -7,7 +7,14 @@ const {
   igMaxAnswerLength,
 } = require('./config');
 const { verifyLeadStartCode } = require('./leadLinkCode');
-const { getLeadById, getQuestions, ensureInstagramLeadContact, createResponse } = require('./strapiClient');
+const {
+  getLeadById,
+  getLeadByInstagramUserId,
+  createLead,
+  getQuestions,
+  ensureInstagramLeadContact,
+  createResponse,
+} = require('./strapiClient');
 const { sendText } = require('./metaApi');
 
 const app = express();
@@ -75,6 +82,35 @@ const sendCurrentQuestion = async (userId) => {
   await sendText(userId, renderQuestion(q));
 };
 
+const startQuizForLead = async ({ userId, lead }) => {
+  const allQuestions = await getQuestions('ru');
+  const finalQuestion = allQuestions.find((q) => String(q.name || '').toLowerCase() === 'final');
+  const greetingQuestion = allQuestions.find((q) => String(q.name || '').toLowerCase() === 'greeting');
+  const questions = allQuestions.filter((q) => {
+    const name = String(q.name || '').toLowerCase();
+    return name !== 'final' && name !== 'greeting';
+  });
+
+  if (!questions.length) {
+    await sendText(userId, finalQuestion?.text || 'Опрос завершен. Спасибо!');
+    return;
+  }
+
+  sessions.set(String(userId), {
+    leadId: lead.id,
+    questions,
+    index: 0,
+    expiresAt: Date.now() + igSessionTtlSec * 1000,
+    finalText: finalQuestion?.text || '',
+  });
+
+  await sendText(
+    userId,
+    `Здравствуйте, ${lead.name || 'студент'}! ${greetingQuestion?.text || 'Начнём опрос.'}`,
+  );
+  await sendCurrentQuestion(String(userId));
+};
+
 const processMessage = async (userId, text) => {
   if (!touchRateLimit(userId)) return;
 
@@ -113,32 +149,7 @@ const processMessage = async (userId, text) => {
       await ensureInstagramLeadContact({ leadId: lead.id, userId: String(userId) });
     }
 
-    const allQuestions = await getQuestions('ru');
-    const finalQuestion = allQuestions.find((q) => String(q.name || '').toLowerCase() === 'final');
-    const greetingQuestion = allQuestions.find((q) => String(q.name || '').toLowerCase() === 'greeting');
-    const questions = allQuestions.filter((q) => {
-      const name = String(q.name || '').toLowerCase();
-      return name !== 'final' && name !== 'greeting';
-    });
-
-    if (!questions.length) {
-      await sendText(userId, finalQuestion?.text || 'Опрос завершен. Спасибо!');
-      return;
-    }
-
-    sessions.set(String(userId), {
-      leadId: lead.id,
-      questions,
-      index: 0,
-      expiresAt: Date.now() + igSessionTtlSec * 1000,
-      finalText: finalQuestion?.text || '',
-    });
-
-    await sendText(
-      userId,
-      `Здравствуйте, ${lead.name || 'студент'}! ${greetingQuestion?.text || 'Начнём опрос.'}`,
-    );
-    await sendCurrentQuestion(String(userId));
+    await startQuizForLead({ userId, lead });
     return;
   }
 
@@ -150,7 +161,20 @@ const processMessage = async (userId, text) => {
 
   const session = sessions.get(String(userId));
   if (!session) {
-    await sendText(userId, 'Для начала отправьте сообщение: START <код>');
+    let lead = await getLeadByInstagramUserId(String(userId));
+    if (!lead) {
+      const leadId = await createLead({
+        name: `Instagram ${String(userId).slice(-6)}`,
+        userAgent: 'instagram',
+      });
+      await ensureInstagramLeadContact({ leadId, userId: String(userId) });
+      lead = await getLeadById(leadId);
+    }
+    if (!lead) {
+      await sendText(userId, 'Не удалось начать опрос. Попробуйте позже.');
+      return;
+    }
+    await startQuizForLead({ userId, lead });
     return;
   }
 
@@ -193,9 +217,14 @@ app.get('/webhook', (req, res) => {
 
 app.post('/webhook', async (req, res) => {
   try {
+    console.log('IG webhook payload received:', {
+      object: req.body?.object,
+      entries: Array.isArray(req.body?.entry) ? req.body.entry.length : 0,
+    });
     const entries = Array.isArray(req.body?.entry) ? req.body.entry : [];
     for (const entry of entries) {
       const events = Array.isArray(entry?.messaging) ? entry.messaging : [];
+      console.log('IG entry events:', events.length);
       for (const event of events) {
         const userId = String(event?.sender?.id || '');
         if (!userId) continue;
@@ -203,8 +232,16 @@ app.post('/webhook', async (req, res) => {
         const text = String(
           event?.message?.text || event?.postback?.payload || event?.postback?.title || '',
         ).trim();
-        if (!text) continue;
+        if (!text) {
+          console.log('IG skip event without text:', {
+            sender: userId,
+            hasMessage: Boolean(event?.message),
+            hasPostback: Boolean(event?.postback),
+          });
+          continue;
+        }
 
+        console.log('IG incoming text:', { sender: userId, text });
         await processMessage(userId, text);
       }
     }
