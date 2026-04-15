@@ -70,7 +70,7 @@ export default function Forms({
       const existing = parsed.searchParams.get("text");
       const prefix = existing ? `${existing}\n` : "";
       parsed.searchParams.set("text", `${prefix}START ${startCode}`);
-      return parsed.toString();
+      return parsed.toString().replace(/\+/g, "%20");
     } catch {
       return url;
     }
@@ -109,7 +109,7 @@ export default function Forms({
       const existing = parsed.searchParams.get("text");
       const prefix = existing ? `${existing}\n` : "";
       parsed.searchParams.set("text", `${prefix}START ${startCode}`);
-      return parsed.toString();
+      return parsed.toString().replace(/\+/g, "%20");
     } catch {
       return url;
     }
@@ -119,10 +119,6 @@ export default function Forms({
     e.preventDefault();
     if (isSubmitting) return;
     setError("");
-    const openedWindow =
-      typeof window !== "undefined"
-        ? window.open("about:blank", "_blank", "noopener,noreferrer")
-        : null;
 
     const formData = new FormData(e.currentTarget);
     const name = String(formData.get("name") || "").trim();
@@ -133,24 +129,20 @@ export default function Forms({
     const socialNetworkUrl = normalizeExternalUrl(socialNetworkUrlRaw);
 
     if (!socialNetworkUrl) {
-      if (openedWindow) openedWindow.close();
       setError("Выберите социальную сеть");
       return;
     }
     if (!kidAgeRaw) {
-      if (openedWindow) openedWindow.close();
       setError("Выберите возраст ребенка");
       return;
     }
     if (!name || !country) {
-      if (openedWindow) openedWindow.close();
       return;
     }
 
     if (typeof window !== "undefined") {
       const lastSubmitTs = Number(window.localStorage.getItem("lead_submit_ts") || "0");
       if (Date.now() - lastSubmitTs < submitCooldownMs) {
-        if (openedWindow) openedWindow.close();
         setError("Подождите немного перед повторной отправкой");
         return;
       }
@@ -190,14 +182,9 @@ export default function Forms({
           ),
           startCode,
         );
-        if (openedWindow) {
-          openedWindow.location.href = targetUrl;
-        } else {
-          window.location.href = targetUrl;
-        }
+        window.location.href = targetUrl;
       }
     } catch {
-      if (openedWindow) openedWindow.close();
       setError("Не удалось открыть чат. Попробуйте снова.");
     } finally {
       setIsSubmitting(false);
