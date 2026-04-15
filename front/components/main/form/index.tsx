@@ -95,26 +95,6 @@ export default function Forms({
     }
   };
 
-  const withInstagramStartCode = (url: string, startCode?: string) => {
-    if (!startCode) return url;
-    try {
-      const parsed = new URL(url);
-      const host = parsed.hostname.toLowerCase();
-      const isInstagram =
-        host === "ig.me" ||
-        host === "www.ig.me" ||
-        host === "instagram.com" ||
-        host === "www.instagram.com";
-      if (!isInstagram) return url;
-      const existing = parsed.searchParams.get("text");
-      const prefix = existing ? `${existing}\n` : "";
-      parsed.searchParams.set("text", `${prefix}START ${startCode}`);
-      return parsed.toString().replace(/\+/g, "%20");
-    } catch {
-      return url;
-    }
-  };
-
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
@@ -172,12 +152,9 @@ export default function Forms({
       }
       if (typeof window !== "undefined") {
         const startCode = payload?.leadStartCode || payload?.telegramStartCode;
-        const targetUrl = withInstagramStartCode(
-          withFacebookStartCode(
-            withWhatsAppStartCode(
-              withTelegramStartCode(socialNetworkUrl, startCode),
-              startCode,
-            ),
+        const targetUrl = withFacebookStartCode(
+          withWhatsAppStartCode(
+            withTelegramStartCode(socialNetworkUrl, startCode),
             startCode,
           ),
           startCode,
