@@ -1,0 +1,8 @@
+services:
+  ig-bot:
+    container_name: ig-bot
+    build: .
+    restart: always
+    env_file: .env
+    ports:
+      - "8092:8092"

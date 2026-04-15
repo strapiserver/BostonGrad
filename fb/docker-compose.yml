@@ -1,0 +1,8 @@
+services:
+  fb-bot:
+    container_name: fb-bot
+    build: .
+    restart: always
+    env_file: .env
+    ports:
+      - "8091:8091"
