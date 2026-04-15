@@ -6,11 +6,18 @@ if (!process.env.STRAPI_AUTH_PASSWORD) missing.push('STRAPI_AUTH_PASSWORD');
 if (!process.env.IG_VERIFY_TOKEN && !process.env.WEBHOOK_VERIFY_TOKEN) {
   missing.push('IG_VERIFY_TOKEN or WEBHOOK_VERIFY_TOKEN');
 }
-if (!process.env.IG_ACCESS_TOKEN && !process.env.PAGE_ACCESS_TOKEN) {
-  missing.push('IG_ACCESS_TOKEN or PAGE_ACCESS_TOKEN');
+if (
+  !process.env.IG_ACCESS_TOKEN &&
+  !process.env.FB_PAGE_ACCESS_TOKEN &&
+  !process.env.PAGE_ACCESS_TOKEN
+) {
+  missing.push('IG_ACCESS_TOKEN or FB_PAGE_ACCESS_TOKEN or PAGE_ACCESS_TOKEN');
 }
 if (!process.env.IG_ACCOUNT_ID && !process.env.INSTAGRAM_ACCOUNT_ID) {
   missing.push('IG_ACCOUNT_ID or INSTAGRAM_ACCOUNT_ID');
+}
+if (!process.env.FB_PAGE_ID && !process.env.PAGE_ID) {
+  missing.push('FB_PAGE_ID or PAGE_ID');
 }
 if (missing.length) throw new Error(`Missing required env var(s): ${missing.join(', ')}`);
 
@@ -21,8 +28,12 @@ module.exports = {
   strapiAuthPassword: process.env.STRAPI_AUTH_PASSWORD,
 
   igVerifyToken: process.env.IG_VERIFY_TOKEN || process.env.WEBHOOK_VERIFY_TOKEN,
-  igAccessToken: process.env.IG_ACCESS_TOKEN || process.env.PAGE_ACCESS_TOKEN,
+  igAccessToken:
+    process.env.IG_ACCESS_TOKEN ||
+    process.env.FB_PAGE_ACCESS_TOKEN ||
+    process.env.PAGE_ACCESS_TOKEN,
   igAccountId: process.env.IG_ACCOUNT_ID || process.env.INSTAGRAM_ACCOUNT_ID,
+  fbPageId: process.env.FB_PAGE_ID || process.env.PAGE_ID,
   igApiVersion: process.env.IG_API_VERSION || 'v20.0',
 
   leadLinkSecret:
