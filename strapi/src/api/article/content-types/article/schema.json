@@ -122,6 +122,12 @@
         "page"
       ],
       "default": "blog"
+    },
+    "story": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::story.story",
+      "mappedBy": "article"
     }
   }
 }

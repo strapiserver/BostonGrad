@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_shared_program_weeks",
+  "info": {
+    "displayName": "program-week"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.list-item"
+    }
+  }
+}

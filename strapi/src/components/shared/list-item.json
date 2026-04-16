@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_list_items",
+  "info": {
+    "displayName": "list-item"
+  },
+  "options": {},
+  "attributes": {
+    "icon": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

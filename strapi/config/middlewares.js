@@ -31,9 +31,11 @@ module.exports = ({ env }) => {
     "strapi::logger",
     "strapi::query",
     "strapi::body",
+    {
+      resolve: "./src/middlewares/webhook-proxy",
+    },
     "strapi::session",
     "strapi::favicon",
     "strapi::public",
   ];
 };
-

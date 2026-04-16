@@ -24,14 +24,12 @@ module.exports = {
   // },
   upload: {
     config: {
+      sizeLimit: 300 * 1024 * 1024,
       provider: "local",
       breakpoints: {
         large: 1200,
         medium: 800,
         small: 480,
-      },
-      providerOptions: {
-        sizeLimit: 300 * 1024 * 1024, // 300kb
       },
     },
   },
