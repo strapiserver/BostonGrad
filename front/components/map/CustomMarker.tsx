@@ -75,7 +75,7 @@ const CustomMarker = ({
   const isActive =
     activeMarkerId !== undefined ? activeMarkerId === id : localActive;
   const isOpen = isActive || hoveredMarker || hoveredTooltip;
-  const pinColor = highlighted ? "violet.600" : isOpen ? "red.300" : "red.400";
+  const pinColor = highlighted ? "#d1a756" : isOpen ? "#f6d894" : "#7a2f2f";
   const hasMultipleEntries = totalEntries > 1;
 
   const handleNavigate = (direction: "next" | "prev") => {
@@ -95,7 +95,9 @@ const CustomMarker = ({
       openDelay={100}
       placement="bottom-start"
       isOpen={isOpen}
-      bgColor="bg.900"
+      bgColor="#3e1818"
+      color="white"
+      border="1px solid rgba(209,167,86,0.35)"
       borderRadius="lg"
       dropShadow="lg"
       pointerEvents="auto"
@@ -192,7 +194,7 @@ const CustomMarker = ({
           position="absolute"
           w="4"
           h="4"
-          bg="bg.800"
+          bg="#3e1818"
           borderRadius="50%"
           mb="2"
           bottom="5"

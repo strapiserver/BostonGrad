@@ -3,11 +3,9 @@ import {
   Box,
   Center,
   Divider,
-  Heading,
   HStack,
   Text,
   useBreakpointValue,
-  useToken,
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
@@ -20,9 +18,7 @@ import { setCity } from "../../redux/mainReducer";
 import { IDirText } from "../../types/exchange";
 import { CityCashSection, MapHeadings } from "./types";
 import CityDescription from "./description";
-import CashDirections from "./directions";
 import { BoxWrapper, CustomHeader } from "../shared/BoxWrapper";
-import { IoMdInformationCircle } from "react-icons/io";
 import OfficeSearchInput from "./OfficeSearchInput";
 import { TbMapPinFilled } from "react-icons/tb";
 import ClosestCities from "./closest";
@@ -86,34 +82,7 @@ const CityMapView = ({
     process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ||
     "";
 
-  const [violet400, bg100, bg300, bg500, bg600, bg700, bg800, bg900] = useToken(
-    "colors",
-    [
-      "violet.400",
-      "bg.100",
-      "bg.300",
-      "bg.500",
-      "bg.600",
-      "bg.700",
-      "bg.800",
-      "bg.900",
-    ]
-  );
-
-  const mapStyles = useMemo(
-    () =>
-      createMapStyles({
-        violet400,
-        bg100,
-        bg300,
-        bg500,
-        bg600,
-        bg700,
-        bg800,
-        bg900,
-      }),
-    [violet400, bg100, bg300, bg500, bg600, bg700, bg800, bg900]
-  );
+  const mapStyles = useMemo(() => createMapStyles(), []);
 
   const mapOptions = useMemo<google.maps.MapOptions>(
     () => ({
@@ -252,18 +221,43 @@ const CityMapView = ({
           gap="3"
           w="100%"
         >
-          <CustomHeader
-            text={`${cityText?.header || headings.h1} ${officesTotal}`}
-            as="h1"
-            Icon={TbMapPinFilled}
-          />
+          <HStack color="#6a2727">
+            <Box color="#d1a756">
+              <TbMapPinFilled size="1.6rem" />
+            </Box>
+            <Text
+              as="h1"
+              fontSize={{ base: "2xl", md: "3xl" }}
+              fontWeight="800"
+              color="#6a2727"
+              lineHeight="1.15"
+            >
+              {`${cityText?.header || headings.h1} ${officesTotal}`}
+            </Text>
+          </HStack>
           {/* <HStack spacing="3" w={{ base: "100%", lg: "unset" }}>
             <OfficeSearchInput value={searchTerm} onChange={setSearchTerm} />
           </HStack> */}
         </HStack>
 
-        <Divider my="4" />
-        <Box borderRadius="lg" overflow="hidden" bg="bg.900">
+        <Divider my="4" borderColor="rgba(106,39,39,0.2)" />
+        <Box
+          borderRadius="xl"
+          overflow="hidden"
+          bg="linear-gradient(160deg, rgba(106,39,39,0.92) 0%, rgba(66,22,22,0.95) 100%)"
+          border="2px solid #FFD56A"
+          boxShadow="0 0 0 2px #F6D894, 0 0 22px rgba(255,213,106,0.42), 0 16px 34px rgba(66,22,22,0.35)"
+          p={{ base: 2, md: 3 }}
+          position="relative"
+          _before={{
+            content: '""',
+            position: "absolute",
+            inset: "8px",
+            borderRadius: "lg",
+            border: "1px solid #F6D894",
+            pointerEvents: "none",
+          }}
+        >
           {isLoaded ? (
             <GoogleMap
               options={mapOptions}
@@ -296,7 +290,7 @@ const CityMapView = ({
               ))}
             </GoogleMap>
           ) : (
-            <Center h="50vh">
+            <Center h="50vh" color="#f6d894">
               <Loader size="xl" />
             </Center>
           )}
@@ -304,11 +298,6 @@ const CityMapView = ({
       </BoxWrapper>
       <CityDescription cityText={cityText} />
       <ClosestCities city={city} closestCities={closestCities} />
-      <CashDirections
-        sections={cashSections}
-        headings={headings}
-        cityName={city.en_name}
-      />
     </Box>
   );
 };

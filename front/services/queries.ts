@@ -739,11 +739,38 @@ export const mainSingleQuery = gql`
           subtitle
           seo_title
           seo_subtitle
+          program_title
+          reasons_title
+          guarantee_title
+          price_title
+          price_value
+          price_note
+          price_button_text
           benefit {
             ... on ComponentSharedBenefit {
               id
               text
             }
+          }
+          program_weeks {
+            id
+            title
+            items {
+              id
+              icon
+              text
+            }
+          }
+          reasons {
+            id
+            icon
+            title
+            subtitle
+          }
+          guarantees {
+            id
+            icon
+            text
           }
           image {
             data {
@@ -752,6 +779,31 @@ export const mainSingleQuery = gql`
                 name
                 alternativeText
                 url
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const storiesQuery = gql`
+  query Stories($locale: I18NLocaleCode) {
+    stories(locale: $locale, pagination: { start: 0, limit: 30 }, sort: ["id:asc"]) {
+      data {
+        id
+        attributes {
+          name
+          age
+          city
+          short_description
+          article {
+            data {
+              id
+              attributes {
+                code
+                header
               }
             }
           }

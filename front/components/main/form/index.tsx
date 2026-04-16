@@ -12,9 +12,11 @@ const { placeholderColor, ...fieldCommonInputStyles } = fieldCommon;
 export default function Forms({
   countries = [],
   socialNetworks = [],
+  title = "Запишитесь на летнюю программу:",
 }: {
   countries?: { id: string; name: string }[];
   socialNetworks?: { name: string; icon: IImage | null; url: string }[];
+  title?: string;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -34,6 +36,22 @@ export default function Forms({
     label: network.name,
     icon: network.icon,
   }));
+
+  const getSocialChannel = (networkName: string, networkUrl: string) => {
+    const name = String(networkName || "").toLowerCase();
+    const url = String(networkUrl || "").toLowerCase();
+    if (name.includes("email") || url.startsWith("mailto:")) return "email";
+    if (name.includes("instagram") || name.includes("инст")) return "instagram";
+    if (name === "vk" || name.includes("вк") || url.includes("vk.com")) return "vk";
+    if (name.includes("telegram") || url.includes("t.me")) return "telegram";
+    if (name.includes("whatsapp") || url.includes("wa.me") || url.includes("whatsapp")) {
+      return "whatsapp";
+    }
+    if (name.includes("facebook") || url.includes("m.me") || url.includes("facebook.com")) {
+      return "facebook";
+    }
+    return "other";
+  };
 
   const normalizeExternalUrl = (value: string) => {
     const trimmed = String(value || "").trim();
@@ -107,6 +125,13 @@ export default function Forms({
     const honeypot = String(formData.get("contact_time") || "").trim();
     const socialNetworkUrlRaw = String(formData.get("socialnetwork") || "").trim();
     const socialNetworkUrl = normalizeExternalUrl(socialNetworkUrlRaw);
+    const selectedNetwork = socialNetworks.find(
+      (item) => normalizeExternalUrl(item.url) === socialNetworkUrl,
+    );
+    const selectedChannel = getSocialChannel(
+      selectedNetwork?.name || "",
+      selectedNetwork?.url || socialNetworkUrl,
+    );
 
     if (!socialNetworkUrl) {
       setError("Выберите социальную сеть");
@@ -124,6 +149,22 @@ export default function Forms({
       const lastSubmitTs = Number(window.localStorage.getItem("lead_submit_ts") || "0");
       if (Date.now() - lastSubmitTs < submitCooldownMs) {
         setError("Подождите немного перед повторной отправкой");
+        return;
+      }
+    }
+
+    if (typeof window !== "undefined") {
+      const noBotChannel =
+        selectedChannel === "email" || selectedChannel === "instagram" || selectedChannel === "vk";
+      if (noBotChannel) {
+        const params = new URLSearchParams({
+          channel: selectedChannel,
+          target: socialNetworkUrl,
+          name,
+          kid_age: kidAgeRaw,
+          country,
+        });
+        window.location.href = `/quiz?${params.toString()}`;
         return;
       }
     }
@@ -172,13 +213,13 @@ export default function Forms({
     <Box w="100%" as="form" onSubmit={onSubmit} textTransform="none">
       <Text
         color="#f6d894"
-        fontSize={{ base: "2xl", md: "xl" }}
+        fontSize={{ base: "2xl", md: "4xl" }}
         fontWeight="700"
         lineHeight="1.15"
         mb={{ base: "4", md: "3" }}
         textShadow="0 0 14px rgba(246,216,148,0.35)"
       >
-        Запишитесь на летнюю программу:
+        {title}
       </Text>
       <Grid
         w="100%"
@@ -187,7 +228,7 @@ export default function Forms({
         gridTemplateColumns={{ base: "1fr", md: "1fr 1fr" }}
       >
         <InputGroup>
-          <InputLeftElement h={{ base: "52px", md: "44px" }} color="#5a2a2a">
+          <InputLeftElement h={{ base: "52px", md: "56px" }} color="#5a2a2a">
             <RiUser3Line />
           </InputLeftElement>
           <Input
@@ -196,8 +237,9 @@ export default function Forms({
             borderRadius="lg"
             placeholder="Ваше имя"
             required
-            h={{ base: "52px", md: "44px" }}
+            h={{ base: "52px", md: "56px" }}
             pl="10"
+            fontSize={{ base: "md", md: "2xl" }}
             bg="white"
             color="#2d1a1a"
             borderColor="rgba(255,255,255,0.65)"
@@ -228,7 +270,8 @@ export default function Forms({
           name="kid_age"
           placeholder="Возраст ребенка"
           autoSelectFirst={false}
-          h={{ base: "52px", md: "44px" }}
+          h={{ base: "52px", md: "56px" }}
+          fontSize={{ base: "md", md: "2xl" }}
           options={ageOptions}
           leftIcon={<RiListSettingsLine color="#5a2a2a" />}
           bg="white"
@@ -247,7 +290,8 @@ export default function Forms({
           placeholder="Страна"
           options={countryOptions}
           defaultValue={countryOptions[0]?.value}
-          h={{ base: "52px", md: "44px" }}
+          h={{ base: "52px", md: "56px" }}
+          fontSize={{ base: "md", md: "2xl" }}
           bg="white"
           color="#2d1a1a"
           borderColor="rgba(255,255,255,0.65)"
@@ -262,7 +306,8 @@ export default function Forms({
           name="socialnetwork"
           placeholder="Способ связи"
           options={socialNetworkOptions}
-          h={{ base: "52px", md: "44px" }}
+          h={{ base: "52px", md: "56px" }}
+          fontSize={{ base: "md", md: "2xl" }}
           bg="white"
           color="#2d1a1a"
           borderColor="rgba(255,255,255,0.65)"
@@ -273,7 +318,9 @@ export default function Forms({
           }}
         />
         <Button
-          size={{ base: "lg", md: "md" }}
+          size="md"
+          h={{ base: "48px", md: "50px" }}
+          fontSize={{ base: "lg", md: "2xl" }}
           bgGradient="linear(to-r, #f6d894 0%, #eebc57 100%)"
           color="#4a1c1c"
           _hover={{ filter: "brightness(1.03)" }}
@@ -292,6 +339,11 @@ export default function Forms({
           </Text>
         ) : null}
       </Grid>
+    </Box>
+  );
+
+  return (
+    <Box w="100%">
     </Box>
   );
 }

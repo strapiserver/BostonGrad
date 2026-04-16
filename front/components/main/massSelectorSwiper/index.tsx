@@ -105,7 +105,13 @@ const MassSelector = () => {
   }, [clearSequence]);
 
   return (
-    <VStack gap={"2"} w="100%" position="relative" ref={containerRef}>
+    <VStack
+      gap={"2"}
+      w="100%"
+      position="relative"
+      ref={containerRef}
+      mb={{ base: 8, lg: 16 }}
+    >
       <VStack
         left="-60px"
         position="absolute"

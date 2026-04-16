@@ -8,9 +8,12 @@ export const addArticleCrossLinking = async (
   articleCodes: string[],
   pms: IPm[] = []
 ): Promise<IArticle> => {
+  const sourceChapters = Array.isArray(article?.chapters) ? article.chapters : [];
+  if (!sourceChapters.length) return article;
+
   const seen = new Set<string>();
   const chapters = await Promise.all(
-    article.chapters.map(async (chapter) => ({
+    sourceChapters.map(async (chapter) => ({
       ...chapter,
       text: chapter.text
         ? enrichText({ seen, text: chapter.text, articleCodes, pms })

@@ -3,7 +3,7 @@ import { VStack, Box, Divider } from "@chakra-ui/react";
 import { useAppDispatch } from "../../redux/hooks";
 import { clean } from "../../redux/mainReducer";
 import { useRouter } from "next/router";
-import { ICard, IMainSingle } from "../../types/pages";
+import { ICard, IMainSingle, IStory } from "../../types/pages";
 import MassSelector from "./massSelectorSwiper";
 import Advantages from "./advantages";
 import CustomTitle from "../shared/CustomTitle";
@@ -15,6 +15,9 @@ import { ClosestCityMatch } from "../map/helper";
 import { ICity } from "../../types/exchange";
 import GreetingImage from "./greeting";
 import { IImage } from "../../types/selector";
+import MockStoryline from "./mockStoryline";
+import ProgramModules from "./ProgramModules";
+import Forms from "./form";
 
 type SocialNetworkItem = {
   name: string;
@@ -55,11 +58,13 @@ const MainPageContent = ({
   mainSingle,
   countries,
   socialNetworks,
+  stories,
 }: {
   cards?: ICard[] | null;
   mainSingle?: IMainSingle | null;
   countries?: CountryOption[] | null;
   socialNetworks?: SocialNetworkItem[] | null;
+  stories?: IStory[] | null;
 }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -96,19 +101,27 @@ const MainPageContent = ({
 
       <MassSelector />
 
-      <CustomTitle
+      <ProgramModules
+        programTitle={mainSingle?.program_title}
+        programWeeks={mainSingle?.program_weeks}
+        reasonsTitle={mainSingle?.reasons_title}
+        reasons={mainSingle?.reasons}
+        guaranteeTitle={mainSingle?.guarantee_title}
+        guarantees={mainSingle?.guarantees}
+        priceTitle={mainSingle?.price_title}
+        priceValue={mainSingle?.price_value}
+        priceNote={mainSingle?.price_note}
+        priceButtonText={mainSingle?.price_button_text}
+      />
+
+      {/* <CustomTitle
         as="h2"
         title={"Преимущества"}
         subtitle={"Работаем на репутацию, а не на прибыль"}
       />
 
-      <Advantages />
+      <Advantages /> */}
 
-      <CustomTitle
-        as="h2"
-        title={"Карта"}
-        subtitle={"Локации офисов на карте"}
-      />
       <CityMapView
         city={mainMapCity}
         exchangerList={[]}
@@ -117,6 +130,23 @@ const MainPageContent = ({
         cityText={null}
         closestCities={mainMapClosestCities}
       />
+
+      <MockStoryline stories={stories || []} />
+
+      <Box
+        w="100%"
+        mt={{ base: "10", md: "14" }}
+        px={{ base: "4", md: "8" }}
+        py={{ base: "8", md: "10" }}
+        bg="linear-gradient(165deg, #5b1f1f 0%, #431616 100%)"
+        borderTop="1px solid rgba(255,210,130,0.5)"
+      >
+        <Forms
+          title="Оставьте заявку"
+          countries={countries || []}
+          socialNetworks={socialNetworks || []}
+        />
+      </Box>
     </VStack>
   );
 };

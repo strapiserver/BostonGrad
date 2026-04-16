@@ -16,7 +16,7 @@ export const converterLinkPROD = `https://converter${index}.${base}`;
 export const serverLinkPROD = `https://server${index}.${base}`;
 export const cmsLinkPROD = `https://cms${index}.${base}`;
 
-const devCmsFallback = "https://cms.bostongrad.com";
+const devCmsFallback = "http://localhost:1337";
 const devServerFallback = "http://localhost:5000";
 const devConverterFallback = "http://localhost:5001";
 

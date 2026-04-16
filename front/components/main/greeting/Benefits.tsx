@@ -13,11 +13,11 @@ export default function Benefits({ benefits }: { benefits?: IMainBenefit[] }) {
       bg="linear-gradient(180deg, rgba(120,40,40,0.45) 0%, rgba(70,20,20,0.45) 100%)"
       border="1px solid rgba(246,216,148,0.6)"
       borderRadius="2xl"
-      px={{ base: "5", md: "4" }}
-      py={{ base: "4", md: "3" }}
+      px={{ base: "5", md: "5" }}
+      py={{ base: "4", md: "4" }}
       boxShadow="inset 0 0 0 1px rgba(255,255,255,0.08)"
     >
-      <List spacing={{ base: "3", md: "3" }}>
+      <List spacing={{ base: "3", md: "4" }}>
         {benefits
           .filter((item) => !!item?.text)
           .map((item, idx) => {
@@ -32,8 +32,8 @@ export default function Benefits({ benefits }: { benefits?: IMainBenefit[] }) {
                 />
                 <Text
                   color="white"
-                  fontSize={{ base: "lg", md: "lg" }}
-                  lineHeight={{ base: "1.3", md: "1.35" }}
+                  fontSize={{ base: "lg", md: "2xl" }}
+                  lineHeight={{ base: "1.3", md: "1.3" }}
                   textShadow="0 1px 8px rgba(0,0,0,0.35)"
                   textTransform="none"
                   letterSpacing="normal"

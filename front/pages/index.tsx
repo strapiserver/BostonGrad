@@ -1,10 +1,10 @@
 import MainPageContent from "../components/main";
-import { ICard, IMainSingle } from "../types/pages";
+import { ICard, IMainSingle, IStory } from "../types/pages";
 import UniversalSeo, { nullSeo } from "../components/shared/UniversalSeo";
 import { ISEO } from "../types/general";
 import { Box } from "@chakra-ui/react";
 import gridPattern from "../public/grid.png";
-import { loadCards, loadMainSingle, TTL } from "../cache/loadX";
+import { loadCards, loadMainSingle, loadStories, TTL } from "../cache/loadX";
 import {
   cmsLinkDEV,
   cmsLinkPROD,
@@ -134,11 +134,12 @@ const loadSocialNetworks = async (): Promise<SocialNetworkItem[]> => {
 
 export const getStaticProps = async () => {
   try {
-    const [mainSingle, cards, countries, socialNetworks] = await Promise.all([
+    const [mainSingle, cards, countries, socialNetworks, stories] = await Promise.all([
       loadMainSingle(),
       loadCards(),
       loadCountries(),
       loadSocialNetworks(),
+      loadStories(),
     ]);
 
     const seo: ISEO = {
@@ -160,6 +161,7 @@ export const getStaticProps = async () => {
         reviews: [],
         countries: countries || [],
         socialNetworks: socialNetworks || [],
+        stories: (stories || []) as IStory[],
       },
       revalidate: TTL.slow,
     };
@@ -178,6 +180,7 @@ export const getStaticProps = async () => {
         reviews: [],
         countries: [],
         socialNetworks: [],
+        stories: [],
       },
       revalidate: TTL.slow,
     };

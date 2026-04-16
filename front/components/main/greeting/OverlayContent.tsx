@@ -33,12 +33,12 @@ export default function OverlayContent({
   return (
     <Box
       position={{ base: "relative", md: "absolute" }}
-      top={{ base: "0", md: "20" }}
+      top={{ base: "0", md: "16" }}
       bottom={{ base: "auto", md: "0" }}
       left={0}
-      w={{ base: "100%", md: "50vw" }}
-      pr={{ base: "0", md: "100px" }}
-      minW={{ base: "0", md: "600px" }}
+      w={{ base: "100%", md: "52vw" }}
+      pr={{ base: "0", md: "120px" }}
+      minW={{ base: "0", md: "760px" }}
       zIndex="3"
       bg={{
         base: "linear-gradient(165deg, #5b1f1f 0%, #431616 100%)",
@@ -59,8 +59,8 @@ export default function OverlayContent({
       textTransform="none"
       letterSpacing="normal"
       pointerEvents="auto"
-      px={{ base: "7", md: "6" }}
-      py={{ base: "8", md: "8" }}
+      px={{ base: "7", md: "7" }}
+      py={{ base: "8", md: "9" }}
       pt={contentOffsetTop}
       overflowY={{ base: "visible", md: "auto" }}
     >
@@ -97,13 +97,13 @@ export default function OverlayContent({
             bg: "radial-gradient(ellipse, rgba(246,216,148,0.55) 0%, rgba(246,216,148,0.18) 45%, rgba(246,216,148,0) 100%)",
           }}
         />
-        <VStack align="stretch" spacing={{ base: "8", md: "6" }}>
+        <VStack align="stretch" spacing={{ base: "8", md: "7" }}>
           <Text
             textAlign="left"
             color="#f6d894"
-            fontSize={{ base: "3xl", md: "3xl", lg: "5xl" }}
+            fontSize={{ base: "3xl", md: "5xl", lg: "6xl" }}
             fontWeight="800"
-            lineHeight={{ base: "1.1", md: "1.15" }}
+            lineHeight={{ base: "1.1", md: "1.06" }}
             letterSpacing={{ base: "0.015em", md: "0.01em" }}
             textTransform="uppercase"
             textShadow="0 2px 0 rgba(70,20,20,0.5), 0 8px 18px rgba(0,0,0,0.45)"
@@ -115,9 +115,9 @@ export default function OverlayContent({
             textAlign="left"
             whiteSpace="normal"
             color="rgba(255,255,255,0.94)"
-            fontSize={{ base: "lg", md: "xl", lg: "2xl" }}
+            fontSize={{ base: "lg", md: "4xl", lg: "4xl" }}
             fontWeight="400"
-            lineHeight={{ base: "1.35", md: "1.35" }}
+            lineHeight={{ base: "1.35", md: "1.25" }}
             letterSpacing={{ base: "0.025em", md: "0.02em" }}
             textTransform="uppercase"
             textShadow="0 1px 8px rgba(0,0,0,0.35)"

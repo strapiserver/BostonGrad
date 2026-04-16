@@ -18,6 +18,7 @@ import {
   allReviewsQuery,
   cardsQuery,
   mainSingleQuery,
+  storiesQuery,
 } from "../services/queries";
 import { getPmsFromSelector } from "./helper";
 import { cachedFetch } from "./cache";
@@ -26,7 +27,7 @@ import {
   exchangerNameToSlug,
   exchangerSlugToName,
 } from "../components/exchangers/helper";
-import { IArticle, ICard, IMainSingle } from "../types/pages";
+import { IArticle, ICard, IMainSingle, IStory } from "../types/pages";
 import { IExchanger, IExchangerPreview } from "../types/exchanger";
 import { IMassDirTextId, IMassDirText, IMassRate } from "../types/mass";
 import { IFaqCategory } from "../types/faq";
@@ -202,6 +203,33 @@ export const loadMainSingle = () =>
     if (serviceFallback?.[0]?.id) return serviceFallback[0];
 
     return null;
+  });
+
+export const loadStories = () =>
+  cachedFetch(`stories_${locale}`, TTL.slow, async () => {
+    const normalizeStories = (input: IStory[] | null | undefined) =>
+      (input || []).filter((story) => !!story?.id && !!story?.name);
+
+    const localized = (await cmsFetcher(storiesQuery, { locale })) as IStory[] | null;
+    const normalizedLocalized = normalizeStories(localized);
+    if (normalizedLocalized.length > 0) return normalizedLocalized;
+
+    const fallback = (await cmsFetcher(storiesQuery)) as IStory[] | null;
+    const normalizedFallback = normalizeStories(fallback);
+    if (normalizedFallback.length > 0) return normalizedFallback;
+
+    const serviceLocalized = (await fetchCMSWithServiceFallback(storiesQuery, {
+      locale,
+    })) as IStory[] | null;
+    const normalizedServiceLocalized = normalizeStories(serviceLocalized);
+    if (normalizedServiceLocalized.length > 0) return normalizedServiceLocalized;
+
+    const serviceFallback =
+      (await fetchCMSWithServiceFallback(storiesQuery)) as IStory[] | null;
+    const normalizedServiceFallback = normalizeStories(serviceFallback);
+    if (normalizedServiceFallback.length > 0) return normalizedServiceFallback;
+
+    return [];
   });
 
 export const loadParserExchangers = () =>
