@@ -289,7 +289,7 @@ export default function Forms({
           name="country"
           placeholder="Страна"
           options={countryOptions}
-          defaultValue={countryOptions[0]?.value}
+          autoSelectFirst={false}
           h={{ base: "52px", md: "56px" }}
           fontSize={{ base: "md", md: "2xl" }}
           bg="white"
@@ -306,6 +306,7 @@ export default function Forms({
           name="socialnetwork"
           placeholder="Способ связи"
           options={socialNetworkOptions}
+          autoSelectFirst={false}
           h={{ base: "52px", md: "56px" }}
           fontSize={{ base: "md", md: "2xl" }}
           bg="white"
