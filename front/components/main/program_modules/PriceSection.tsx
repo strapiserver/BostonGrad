@@ -20,8 +20,6 @@ type PriceSectionProps = {
   priceButtonText?: string;
 };
 
-const displayPriceNote =
-  "Выберите формат участия: одна или две недели с индивидуальной программой и сопровождением.";
 const oneWeekIncluded = [
   "Индивидуальная программа",
   "Практические сессии",
@@ -112,15 +110,6 @@ const PriceSection = ({ priceTitle, priceButtonText }: PriceSectionProps) => {
             >
               {priceTitle || "Стоимость программы"}
             </Text>
-            <Text
-              textAlign={{ base: "center", md: "left" }}
-              color="rgba(255,255,255,0.9)"
-              fontSize={{ base: "md", md: "lg" }}
-              lineHeight="1.7"
-              maxW="48ch"
-            >
-              {displayPriceNote}
-            </Text>
             <Button
               as="a"
               href="/articles/pricing"
@@ -183,7 +172,7 @@ const PriceSection = ({ priceTitle, priceButtonText }: PriceSectionProps) => {
                     <Text>{card.badge}</Text>
                   </HStack>
                 ) : null}
-                <VStack spacing="4" h="100%" justify="center" pt={card.badge ? "5" : 0}>
+                <VStack spacing="4" h="100%" justify="center">
                   <VStack spacing="1">
                     <Text
                       color="#fff1c9"
