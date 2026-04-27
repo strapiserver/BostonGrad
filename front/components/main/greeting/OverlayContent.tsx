@@ -4,6 +4,7 @@ import { IMainBenefit } from "../../../types/pages";
 import { IImage } from "../../../types/selector";
 import Benefits from "./Benefits";
 import Forms from "../form";
+import FlagText from "./FlagText";
 
 type SocialNetworkItem = {
   name: string;
@@ -109,7 +110,7 @@ export default function OverlayContent({
             textShadow="0 2px 0 rgba(70,20,20,0.5), 0 8px 18px rgba(0,0,0,0.45)"
             display={{ base: "none", md: "block" }}
           >
-            {title || ""}
+            <FlagText text={title} />
           </Text>
           <Text
             textAlign="left"
@@ -123,7 +124,7 @@ export default function OverlayContent({
             textShadow="0 1px 8px rgba(0,0,0,0.35)"
             display={{ base: "none", md: "block" }}
           >
-            {subtitle || ""}
+            <FlagText text={subtitle} />
           </Text>
           <Benefits benefits={benefits} />
           <Forms

@@ -1,33 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { requestStrapiAsService } from "../../../services/server/strapiClient";
 import { hasValidLeadsSession } from "../../../services/server/leadsSession";
-
-type LeadQuestion = {
-  id: string;
-  name: string;
-  text: string;
-  stage: number | null;
-  isBoolean: boolean;
-  isOptional: boolean;
-  options: string[];
-};
-
-type LeadResponse = {
-  id: string;
-  answer: string;
-  question: LeadQuestion | null;
-};
-
-type LeadItem = {
-  id: string;
-  name: string;
-  status: string;
-  kid_age: number | null;
-  country: string;
-  userAgent: string;
-  createdAt: string;
-  responses: LeadResponse[];
-};
+import { LeadItem } from "../../../types/lead";
 
 type ResponseBody = {
   success: boolean;
@@ -45,12 +19,32 @@ const LEADS_QUERY = `
           status
           kid_age
           userAgent
+          admin_comment
           createdAt
           country {
             data {
               id
               attributes {
                 name
+              }
+            }
+          }
+          lead_contacts {
+            data {
+              id
+              attributes {
+                username
+                user_id
+                isBanned
+                isCallForbidden
+                socialnetwork {
+                  data {
+                    id
+                    attributes {
+                      name
+                    }
+                  }
+                }
               }
             }
           }
@@ -95,14 +89,23 @@ const normalizeLeads = (raw: any): LeadItem[] => {
     const responses = Array.isArray(attrs?.responses?.data)
       ? attrs.responses.data
       : [];
+    const leadContacts = Array.isArray(attrs?.lead_contacts?.data)
+      ? attrs.lead_contacts.data
+      : [];
 
     return {
       id: String(item?.id || ""),
       name: attrs?.name || "",
       status: attrs?.status || "",
       kid_age: Number.isFinite(attrs?.kid_age) ? attrs.kid_age : null,
-      country: attrs?.country?.data?.attributes?.name || "",
+      country: attrs?.country?.data
+        ? {
+            id: String(attrs.country.data.id || ""),
+            name: attrs.country.data.attributes?.name || "",
+          }
+        : null,
       userAgent: attrs?.userAgent || "",
+      admin_comment: attrs?.admin_comment || "",
       createdAt: attrs?.createdAt || "",
       responses: responses.map((r: any) => {
         const ra = r?.attributes || {};
@@ -135,6 +138,17 @@ const normalizeLeads = (raw: any): LeadItem[] => {
         if (typeof sa !== "number") return 1;
         if (typeof sb !== "number") return -1;
         return sa - sb;
+      }),
+      lead_contacts: leadContacts.map((contact: any) => {
+        const ca = contact?.attributes || {};
+        return {
+          id: String(contact?.id || ""),
+          user_id: ca?.user_id || "",
+          username: ca?.username || "",
+          isBanned: Boolean(ca?.isBanned),
+          isCallForbidden: Boolean(ca?.isCallForbidden),
+          socialnetworkName: ca?.socialnetwork?.data?.attributes?.name || "",
+        };
       }),
     };
   });

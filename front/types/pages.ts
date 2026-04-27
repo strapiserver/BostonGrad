@@ -43,12 +43,35 @@ export interface IMainText {
   link: ILink;
 }
 
-export interface ICard {
+export interface IUni {
   id: string;
   header?: string;
   subheader?: string;
-  slug: string;
+  slug?: string;
   image?: IImage;
+  article?: {
+    id: string;
+    code?: string | null;
+    header?: string | null;
+  } | null;
+}
+
+export interface IProduct {
+  id: string;
+  title: string;
+  rank?: number | null;
+  subtitle_1?: string | null;
+  subtitle_2?: string | null;
+  subtitle_3?: string | null;
+  image?: IImage | null;
+  icon_1?: IImage | null;
+  icon_2?: IImage | null;
+  icon_3?: IImage | null;
+  article?: {
+    id: string;
+    code?: string | null;
+    header?: string | null;
+  } | null;
 }
 
 export interface IMainSingle {

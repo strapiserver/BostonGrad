@@ -614,18 +614,6 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@lottiefiles/dotlottie-react@^0.17.10":
-  version "0.17.10"
-  resolved "https://registry.yarnpkg.com/@lottiefiles/dotlottie-react/-/dotlottie-react-0.17.10.tgz#881a5553e30c9c4c1d288b308b9fc3583cfaf8e6"
-  integrity sha512-ikrN05/q0/KjqIU+n48uNwmE7DeZIC9y3Nd19httcKqe273zoOeNYycEaQzLSdcpEGnWLmHaZpgtoo07aQZAXg==
-  dependencies:
-    "@lottiefiles/dotlottie-web" "0.58.1"
-
-"@lottiefiles/dotlottie-web@0.58.1":
-  version "0.58.1"
-  resolved "https://registry.yarnpkg.com/@lottiefiles/dotlottie-web/-/dotlottie-web-0.58.1.tgz#977eba6c6a71d2432eaf4b0bec2e83aa98b18554"
-  integrity sha512-YC4pmScrV0R3rd11gU5xHrjeNczlCic69zlnMH/buDIzYxIbpR88oPUhGtKgu5ln7EJchoLpeRJbA3uLCzSeTA==
-
 "@motionone/animation@^10.12.0":
   version "10.18.0"
   resolved "https://registry.yarnpkg.com/@motionone/animation/-/animation-10.18.0.tgz#868d00b447191816d5d5cf24b1cafa144017922b"

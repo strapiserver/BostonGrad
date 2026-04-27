@@ -1,15 +1,15 @@
 import MainPageContent from "../components/main";
-import { ICard, IMainSingle, IStory } from "../types/pages";
+import { IMainSingle, IProduct, IStory, IUni } from "../types/pages";
 import UniversalSeo, { nullSeo } from "../components/shared/UniversalSeo";
 import { ISEO } from "../types/general";
 import { Box } from "@chakra-ui/react";
 import gridPattern from "../public/grid.png";
-import { loadCards, loadMainSingle, loadStories, TTL } from "../cache/loadX";
+import { loadMainSingle, loadStories, loadUnis, TTL } from "../cache/loadX";
 import {
   cmsLinkDEV,
   cmsLinkPROD,
   internalCmsLink,
-  resolveInternalUrl,
+  resolveCmsUrl,
 } from "../services/utils";
 import { IImage } from "../types/selector";
 
@@ -24,10 +24,139 @@ type CountryOption = {
   name: string;
 };
 
+type ProductArticle = {
+  id: string;
+  code?: string | null;
+  header?: string | null;
+} | null;
+
+type ProductImage = IImage | null;
+
+const resolveMediaUrl = (baseUrl: string, url: string) => {
+  if (!url) return url;
+  if (/^https?:\/\//i.test(url)) return url;
+  return `${baseUrl}${url.startsWith("/") ? "" : "/"}${url}`;
+};
+
+const extractImage = (raw: any, baseUrl: string): ProductImage => {
+  const candidate = raw?.data?.attributes || raw?.attributes || raw || {};
+  const url =
+    typeof candidate?.url === "string"
+      ? candidate.url
+      : typeof raw?.url === "string"
+        ? raw.url
+        : null;
+  if (!url) return null;
+
+  return {
+    id: String(candidate?.id || raw?.data?.id || raw?.id || url),
+    url: resolveMediaUrl(baseUrl, url),
+    alternativeText:
+      typeof candidate?.alternativeText === "string"
+        ? candidate.alternativeText
+        : null,
+    name: typeof candidate?.name === "string" ? candidate.name : null,
+    formats: candidate?.formats,
+  };
+};
+
+const extractArticle = (raw: any): ProductArticle => {
+  const candidate = raw?.data?.attributes || raw?.attributes || raw || {};
+  const id = candidate?.id || raw?.data?.id || raw?.id;
+  const code = candidate?.code;
+  const header = candidate?.header;
+
+  if (!id && !code && !header) return null;
+  return {
+    id: String(id || code || header),
+    code: typeof code === "string" ? code : null,
+    header: typeof header === "string" ? header : null,
+  };
+};
+
+const loadProducts = async (): Promise<IProduct[]> => {
+  const env = process.env.NODE_ENV;
+  const publicBase = env === "production" ? cmsLinkPROD : cmsLinkDEV;
+  const cmsBase = resolveCmsUrl(publicBase, internalCmsLink);
+  const adminUrl = `${cmsBase}/admin/content-manager/collectionType/api::product.product?page=1&pageSize=10&plugins[i18n][locale]=ru`;
+  const apiUrl = `${cmsBase}/api/products?locale=ru&pagination[page]=1&pagination[pageSize]=10&populate=*`;
+
+  const extractItems = (payload: any): IProduct[] => {
+    const candidates = [
+      ...(Array.isArray(payload?.results) ? payload.results : []),
+      ...(Array.isArray(payload?.data) ? payload.data : []),
+    ];
+
+    return candidates
+      .flatMap((item: any, index) => {
+        const attrs = item?.attributes || item || {};
+        const title = String(attrs?.title || "").trim();
+        if (!title) return [];
+        const rawRank = attrs?.rank;
+        const rank =
+          typeof rawRank === "number" && Number.isFinite(rawRank)
+            ? rawRank
+            : null;
+
+        return [
+          {
+            id: String(item?.id || attrs?.id || attrs?.documentId || title),
+            title,
+            rank,
+            subtitle_1:
+              typeof attrs?.subtitle_1 === "string" ? attrs.subtitle_1 : null,
+            subtitle_2:
+              typeof attrs?.subtitle_2 === "string" ? attrs.subtitle_2 : null,
+            subtitle_3:
+              typeof attrs?.subtitle_3 === "string" ? attrs.subtitle_3 : null,
+            image: extractImage(attrs?.image, cmsBase),
+            icon_1: extractImage(attrs?.icon_1, cmsBase),
+            icon_2: extractImage(attrs?.icon_2, cmsBase),
+            icon_3: extractImage(attrs?.icon_3, cmsBase),
+            article: extractArticle(attrs?.article),
+            _index: index,
+          },
+        ];
+      })
+      .sort(
+        (
+          a: IProduct & { _index: number },
+          b: IProduct & { _index: number },
+        ) => {
+          const aRanked = typeof a.rank === "number";
+          const bRanked = typeof b.rank === "number";
+          if (aRanked && bRanked && a.rank !== b.rank)
+            return a.rank! - b.rank!;
+          if (aRanked !== bRanked) return aRanked ? -1 : 1;
+          return a._index - b._index;
+        },
+      )
+      .map(({ _index, ...item }) => item);
+  };
+
+  try {
+    const adminRes = await fetch(adminUrl);
+    if (adminRes.ok) {
+      const adminJson = await adminRes.json();
+      const products = extractItems(adminJson);
+      if (products.length) return products;
+    }
+  } catch {}
+
+  try {
+    const apiRes = await fetch(apiUrl);
+    if (!apiRes.ok) return [];
+    const apiJson = await apiRes.json();
+    return extractItems(apiJson);
+  } catch {
+    return [];
+  }
+};
+
 const loadCountries = async (): Promise<CountryOption[]> => {
   const env = process.env.NODE_ENV;
   const publicBase = env === "production" ? cmsLinkPROD : cmsLinkDEV;
-  const cmsBase = resolveInternalUrl(publicBase, internalCmsLink);
+  const cmsBase = resolveCmsUrl(publicBase, internalCmsLink);
   const adminUrl = `${cmsBase}/admin/content-manager/collectionType/api::country.country?page=1&pageSize=200&sort=name:ASC`;
   const apiUrl = `${cmsBase}/api/countries?pagination[page]=1&pagination[pageSize]=200&sort=name:ASC`;
 
@@ -69,7 +198,7 @@ const loadCountries = async (): Promise<CountryOption[]> => {
 const loadSocialNetworks = async (): Promise<SocialNetworkItem[]> => {
   const env = process.env.NODE_ENV;
   const publicBase = env === "production" ? cmsLinkPROD : cmsLinkDEV;
-  const cmsBase = resolveInternalUrl(publicBase, internalCmsLink);
+  const cmsBase = resolveCmsUrl(publicBase, internalCmsLink);
   const adminUrl = `${cmsBase}/admin/content-manager/collectionType/api::socialnetwork.socialnetwork?page=1&pageSize=200&sort=name:ASC`;
   const apiUrl = `${cmsBase}/api/socialnetworks?pagination[page]=1&pagination[pageSize]=200&sort=name:ASC&populate=logo`;
 
@@ -134,12 +263,13 @@ const loadSocialNetworks = async (): Promise<SocialNetworkItem[]> => {
 
 export const getStaticProps = async () => {
   try {
-    const [mainSingle, cards, countries, socialNetworks, stories] = await Promise.all([
+    const [mainSingle, unis, countries, socialNetworks, stories, products] = await Promise.all([
       loadMainSingle(),
-      loadCards(),
+      loadUnis(),
       loadCountries(),
       loadSocialNetworks(),
       loadStories(),
+      loadProducts(),
     ]);
 
     const seo: ISEO = {
@@ -153,7 +283,7 @@ export const getStaticProps = async () => {
       props: {
         seo: seo || nullSeo,
         mainSingle: (mainSingle || null) as IMainSingle | null,
-        cards: (cards || []) as ICard[],
+        unis: (unis || []) as IUni[],
         popularPms: [],
         popularRates: null,
         mainTexts: [],
@@ -162,6 +292,7 @@ export const getStaticProps = async () => {
         countries: countries || [],
         socialNetworks: socialNetworks || [],
         stories: (stories || []) as IStory[],
+        products: (products || []) as IProduct[],
       },
       revalidate: TTL.slow,
     };
@@ -172,7 +303,7 @@ export const getStaticProps = async () => {
       props: {
         seo: nullSeo,
         mainSingle: null,
-        cards: [],
+        unis: [],
         popularPms: [],
         popularRates: null,
         mainTexts: [],
@@ -181,6 +312,7 @@ export const getStaticProps = async () => {
         countries: [],
         socialNetworks: [],
         stories: [],
+        products: [],
       },
       revalidate: TTL.slow,
     };

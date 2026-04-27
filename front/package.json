@@ -16,7 +16,6 @@
     "@chakra-ui/theme-tools": "^2.1.0",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
-    "@lottiefiles/dotlottie-react": "^0.17.10",
     "@next/bundle-analyzer": "^13.3.0",
     "@react-google-maps/api": "2.19.0",
     "@reduxjs/toolkit": "^1.7.2",

@@ -8,6 +8,7 @@ type Body = {
   country?: string;
   contactChannel?: string;
   contactValue?: string;
+  emailContact?: string;
 };
 
 type ApiResponse = {
@@ -84,7 +85,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return res.status(400).json({ success: false, error: "Invalid payload" });
   }
 
-  const { name, kid_age, country, contactChannel, contactValue } = req.body;
+  const { name, kid_age, country, contactChannel, contactValue, emailContact } = req.body;
   const socialName = channelToSocialName(contactChannel);
   if (!socialName) {
     return res.status(400).json({ success: false, error: "Unsupported contact channel" });
@@ -109,32 +110,44 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       return res.status(502).json({ success: false, error: "Lead not created" });
     }
 
-    const socialResult = (await requestStrapiAsService(SOCIAL_BY_NAME, {
-      name: socialName,
-    })) as { socialnetworks?: { data?: Array<{ id?: string | number }> } };
-    const socialId = String(socialResult?.socialnetworks?.data?.[0]?.id || "");
-    if (!socialId) {
-      return res.status(404).json({ success: false, error: `Socialnetwork not found: ${socialName}` });
-    }
+    const createContact = async (name: string, value: string) => {
+      const socialResult = (await requestStrapiAsService(SOCIAL_BY_NAME, {
+        name,
+      })) as { socialnetworks?: { data?: Array<{ id?: string | number }> } };
+      const socialId = String(socialResult?.socialnetworks?.data?.[0]?.id || "");
+      if (!socialId) {
+        throw new Error(`Socialnetwork not found: ${name}`);
+      }
 
-    const leadContactResult = (await requestStrapiAsService(CREATE_LEAD_CONTACT, {
-      data: {
-        socialnetwork: socialId,
-        user_id: contactValue.trim(),
-        username: contactValue.trim(),
-        isBanned: false,
-        isCallForbidden: false,
-      },
-    })) as { createLeadContact?: { data?: { id?: string | number } } };
-    const contactId = String(leadContactResult?.createLeadContact?.data?.id || "");
-    if (!contactId) {
-      return res.status(502).json({ success: false, error: "Lead contact not created" });
+      const leadContactResult = (await requestStrapiAsService(CREATE_LEAD_CONTACT, {
+        data: {
+          socialnetwork: socialId,
+          user_id: value.trim(),
+          username: value.trim(),
+          isBanned: false,
+          isCallForbidden: false,
+        },
+      })) as { createLeadContact?: { data?: { id?: string | number } } };
+      const contactId = String(leadContactResult?.createLeadContact?.data?.id || "");
+      if (!contactId) {
+        throw new Error("Lead contact not created");
+      }
+      return contactId;
+    };
+
+    const contactIds = [await createContact(socialName, contactValue)];
+    const normalizedEmail = String(emailContact || "").trim();
+    if (
+      normalizedEmail &&
+      (socialName !== "Email" || normalizedEmail !== contactValue.trim())
+    ) {
+      contactIds.push(await createContact("Email", normalizedEmail));
     }
 
     await requestStrapiAsService(UPDATE_LEAD, {
       id: leadId,
       data: {
-        lead_contacts: [contactId],
+        lead_contacts: contactIds,
       },
     });
 
@@ -144,4 +157,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 }
-

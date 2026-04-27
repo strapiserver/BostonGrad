@@ -4,6 +4,7 @@ import { cmsLinkPROD, cmsLinkDEV } from "../../../services/utils";
 import { IMainSingle } from "../../../types/pages";
 import { IImage } from "../../../types/selector";
 import OverlayContent from "./OverlayContent";
+import FlagText from "./FlagText";
 
 type SocialNetworkItem = {
   name: string;
@@ -102,7 +103,7 @@ export default function GreetingImage({
                   textTransform="uppercase"
                   textShadow="0 2px 0 rgba(70,20,20,0.45), 0 8px 18px rgba(0,0,0,0.45)"
                 >
-                  {mainSingle.title || ""}
+                  <FlagText text={mainSingle.title} />
                 </Text>
                 <Text
                   px="6"
@@ -114,7 +115,7 @@ export default function GreetingImage({
                   textTransform="uppercase"
                   textShadow="0 1px 8px rgba(0,0,0,0.35)"
                 >
-                  {mainSingle.subtitle || ""}
+                  <FlagText text={mainSingle.subtitle} />
                 </Text>
               </Box>
               <OverlayContent

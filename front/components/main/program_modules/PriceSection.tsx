@@ -1,0 +1,345 @@
+import {
+  Box,
+  Button,
+  Grid,
+  HStack,
+  SimpleGrid,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
+import {
+  RiArrowRightLine,
+  RiCheckLine,
+  RiInformationLine,
+  RiStarFill,
+} from "react-icons/ri";
+import { palette } from "./shared";
+
+type PriceSectionProps = {
+  priceTitle?: string;
+  priceButtonText?: string;
+};
+
+const displayPriceNote =
+  "Выберите формат участия: одна неделя включает школу и кампус-туры, две недели дополнительно включают поездку в Нью-Йорк.";
+const oneWeekIncluded = [
+  "Школа: интенсив по поступлению",
+  "Кампус-туры",
+  "Проживание",
+  "Транспорт по программе",
+  "Сопровождение",
+];
+const twoWeekExtras = [
+  "Поездка в Нью-Йорк",
+  "Финальный план и отчет",
+];
+
+const priceCards = [
+  {
+    title: "1 неделя",
+    subtitle: "Школа + кампус-туры",
+    price: "$5800",
+  },
+  {
+    title: "2 недели",
+    subtitle: "Школа + кампус-туры + Нью-Йорк",
+    price: "$7800",
+    badge: "Популярный формат",
+  },
+];
+
+const PriceSection = ({ priceTitle, priceButtonText }: PriceSectionProps) => {
+  return (
+    <Box
+      px={{ base: 4, md: 7 }}
+      py={{ base: 5, md: 7 }}
+      borderRadius={{ base: "18px", md: "22px" }}
+      bg={`radial-gradient(circle at 74% 8%, rgba(235,205,143,0.12), transparent 24%), linear-gradient(145deg, #92272c 0%, #70171b 48%, ${palette.wine900} 100%)`}
+      border={`1px solid rgba(235,205,143,0.55)`}
+      boxShadow="0 22px 44px rgba(79,16,18,0.28)"
+      color={palette.gold400}
+      position="relative"
+      overflow="hidden"
+      _before={{
+        content: '""',
+        position: "absolute",
+        inset: 0,
+        background:
+          "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 24%), radial-gradient(circle at 88% 16%, rgba(255,255,255,0.1), transparent 18%)",
+        pointerEvents: "none",
+      }}
+    >
+      <VStack
+        align="stretch"
+        spacing={{ base: 5, md: 7 }}
+        position="relative"
+        zIndex={1}
+      >
+        <Grid
+          gap={{ base: 5, md: 7 }}
+          alignItems="stretch"
+          templateColumns={{
+            base: "1fr",
+            lg: "minmax(0, 0.82fr) minmax(520px, 1.18fr)",
+          }}
+        >
+          <VStack
+            spacing="4"
+            align={{ base: "center", md: "start" }}
+            justify="center"
+          >
+            <Text
+              color={palette.gold400}
+              border="1px solid rgba(235,205,143,0.45)"
+              borderRadius="full"
+              px="4"
+              py="1.5"
+              fontSize="xs"
+              fontWeight="900"
+              textTransform="uppercase"
+              letterSpacing="0.04em"
+            >
+              Прозрачно и честно
+            </Text>
+            <Text
+              as="h2"
+              fontSize={{ base: "3xl", md: "4xl", xl: "5xl" }}
+              fontWeight="900"
+              color="#f7e0ae"
+              textAlign={{ base: "center", md: "left" }}
+              lineHeight="1.04"
+              textShadow="0 8px 24px rgba(0,0,0,0.24)"
+            >
+              {priceTitle || "Стоимость программы"}
+            </Text>
+            <Text
+              textAlign={{ base: "center", md: "left" }}
+              color="rgba(255,255,255,0.9)"
+              fontSize={{ base: "md", md: "lg" }}
+              lineHeight="1.7"
+              maxW="48ch"
+            >
+              {displayPriceNote}
+            </Text>
+            <Button
+              as="a"
+              href="/articles/pricing"
+              w={{ base: "100%", sm: "auto" }}
+              minW={{ md: "320px" }}
+              minH="54px"
+              bg={`linear-gradient(180deg, #f4d998 0%, ${palette.gold500} 100%)`}
+              color={palette.wine900}
+              _hover={{
+                transform: "translateY(-2px)",
+                boxShadow: "0 12px 28px rgba(212,173,99,0.35)",
+              }}
+              _active={{ transform: "translateY(0)" }}
+              fontSize={{ base: "md", md: "lg" }}
+              fontWeight="900"
+              px={{ base: 4, md: 6 }}
+              border="2px solid rgba(79,16,18,0.45)"
+              borderRadius="14px"
+              rightIcon={<RiArrowRightLine />}
+            >
+              {priceButtonText || "Узнать точную стоимость"}
+            </Button>
+          </VStack>
+
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing="4" alignItems="stretch">
+            {priceCards.map((card) => (
+              <Box
+                key={card.title}
+                position="relative"
+                p={{ base: 5, md: 5 }}
+                minH={{ md: "260px" }}
+                borderRadius="16px"
+                border={
+                  card.badge
+                    ? "2px solid rgba(235,205,143,0.82)"
+                    : "1px solid rgba(235,205,143,0.62)"
+                }
+                bg="linear-gradient(180deg, rgba(82,18,21,0.78) 0%, rgba(65,13,16,0.82) 100%)"
+                boxShadow="inset 0 1px 0 rgba(255,255,255,0.14)"
+                h="100%"
+              >
+                {card.badge ? (
+                  <HStack
+                    position="absolute"
+                    top="0"
+                    right="4"
+                    transform="translateY(-1px)"
+                    bg="linear-gradient(180deg, #c27833 0%, #9c4d22 100%)"
+                    color="#fff1c9"
+                    px="3"
+                    py="1.5"
+                    borderBottomRadius="8px"
+                    spacing="1.5"
+                    fontSize="xs"
+                    fontWeight="900"
+                    textTransform="uppercase"
+                    boxShadow="0 8px 18px rgba(0,0,0,0.16)"
+                  >
+                    <Box as={RiStarFill} />
+                    <Text>{card.badge}</Text>
+                  </HStack>
+                ) : null}
+                <VStack spacing="4" h="100%" justify="center" pt={card.badge ? "5" : 0}>
+                  <VStack spacing="1">
+                    <Text
+                      color="#fff1c9"
+                      fontSize={{ base: "3xl", md: "3xl", xl: "4xl" }}
+                      fontWeight="900"
+                      lineHeight="1"
+                    >
+                      {card.title}
+                    </Text>
+                    <Text
+                      color="rgba(255,255,255,0.9)"
+                      fontSize="md"
+                      lineHeight="1.45"
+                      textAlign="center"
+                    >
+                      {card.subtitle}
+                    </Text>
+                  </VStack>
+                  <Box w="100%" h="1px" bg="rgba(235,205,143,0.24)" />
+                  <HStack align="baseline" justify="center" spacing="3">
+                    <Text color={palette.gold400} fontSize="xl" fontWeight="900">
+                      от
+                    </Text>
+                    <Text
+                      color="#fff1c9"
+                      fontSize={{ base: "5xl", md: "5xl", xl: "6xl" }}
+                      fontWeight="900"
+                      lineHeight="0.95"
+                      textShadow="0 8px 28px rgba(235,205,143,0.22)"
+                      whiteSpace="nowrap"
+                    >
+                      {card.price}
+                    </Text>
+                  </HStack>
+                </VStack>
+              </Box>
+            ))}
+          </SimpleGrid>
+        </Grid>
+
+        <Grid
+          templateColumns={{ base: "1fr", md: "1.25fr 0.75fr" }}
+          border="1px solid rgba(235,205,143,0.28)"
+          borderRadius="18px"
+          overflow="hidden"
+          bg="linear-gradient(180deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.045) 100%)"
+        >
+          {[
+            ["Базовый пакет", "входит в оба формата", oneWeekIncluded],
+            [
+              "Дополнительно во 2 недели",
+              "только для двухнедельного тура",
+              twoWeekExtras,
+            ],
+          ].map(([title, subtitle, items], index) => (
+            <Box
+              key={title as string}
+              p={{ base: 5, md: 6 }}
+              borderLeft={{
+                base: "none",
+                md: index ? "1px solid rgba(235,205,143,0.22)" : "none",
+              }}
+              borderTop={{
+                base: index ? "1px solid rgba(235,205,143,0.22)" : "none",
+                md: "none",
+              }}
+            >
+              <HStack spacing="4" mb="4" align="center">
+                <Box
+                  w="38px"
+                  h="38px"
+                  borderRadius="full"
+                  border="1px solid rgba(235,205,143,0.58)"
+                  bg="rgba(79,16,18,0.35)"
+                  color={palette.gold400}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  boxShadow="0 0 18px rgba(235,205,143,0.18)"
+                >
+                  <Box as={RiCheckLine} fontSize="xl" />
+                </Box>
+                <Box>
+                  <Text
+                    color="#f7e0ae"
+                    fontWeight="900"
+                    fontSize={{ base: "xl", md: "xl", xl: "2xl" }}
+                    lineHeight="1.15"
+                  >
+                    {title as string}
+                  </Text>
+                  <Text color="rgba(255,255,255,0.68)" fontSize="sm" mt="1">
+                    {subtitle as string}
+                  </Text>
+                </Box>
+              </HStack>
+              <Box h="1px" bg="rgba(235,205,143,0.18)" mb="4" />
+              <VStack align="stretch" spacing="0">
+                {(items as string[]).map((item) => (
+                  <HStack
+                    key={item}
+                    align="start"
+                    spacing="3"
+                    py="2.5"
+                    borderBottom="1px solid rgba(255,255,255,0.075)"
+                    _last={{ borderBottom: "none" }}
+                  >
+                    <Box
+                      w="20px"
+                      h="20px"
+                      borderRadius="full"
+                      bg="rgba(235,205,143,0.95)"
+                      color={palette.wine700}
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      mt="0.5"
+                      flexShrink={0}
+                    >
+                      <Box as={RiCheckLine} fontSize="sm" />
+                    </Box>
+                    <Text
+                      color="rgba(255,255,255,0.92)"
+                      fontSize={{ base: "sm", md: "md" }}
+                      lineHeight="1.45"
+                    >
+                      {item}
+                    </Text>
+                  </HStack>
+                ))}
+              </VStack>
+            </Box>
+          ))}
+        </Grid>
+
+        <HStack
+          spacing="3"
+          pt="3"
+          borderTop="1px solid rgba(235,205,143,0.24)"
+          color="rgba(255,255,255,0.76)"
+          align="center"
+        >
+          <Box
+            as={RiInformationLine}
+            color={palette.gold400}
+            fontSize="xl"
+            flexShrink={0}
+          />
+          <Text fontSize={{ base: "xs", md: "sm" }} lineHeight="1.5">
+            Точная стоимость рассчитывается индивидуально под даты поездки и
+            выбранный формат участия.
+          </Text>
+        </HStack>
+      </VStack>
+    </Box>
+  );
+};
+
+export default PriceSection;

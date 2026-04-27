@@ -10,6 +10,7 @@ import {
   internalConverterLink,
   internalServerLink,
   mylog,
+  resolveCmsUrl,
   resolveInternalUrl,
   serverLinkDEV,
   serverLinkPROD,
@@ -57,7 +58,7 @@ const unwrap = (data: any) => {
 export const initCMSFetcher = () => {
   const env = process.env.NODE_ENV;
   const publicBase = env === "production" ? cmsLinkPROD : cmsLinkDEV;
-  const baseUrl = resolveInternalUrl(publicBase, internalCmsLink);
+  const baseUrl = resolveCmsUrl(publicBase, internalCmsLink);
   const url = baseUrl + "/graphql";
 
   const graphQLClient = new GraphQLClient(url || "", { timeout: 15000 });

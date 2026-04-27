@@ -9,10 +9,15 @@ import {
 } from "@chakra-ui/react";
 import type { GetStaticProps } from "next";
 import { useRouter } from "next/router";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useState } from "react";
 import { RiCheckLine, RiMailLine, RiSendPlaneFill } from "react-icons/ri";
 import CustomSelect from "../components/shared/CustomSelect";
-import { cmsLinkDEV, cmsLinkPROD, internalCmsLink, resolveInternalUrl } from "../services/utils";
+import {
+  cmsLinkDEV,
+  cmsLinkPROD,
+  internalCmsLink,
+  resolveCmsUrl,
+} from "../services/utils";
 import gridPattern from "../public/grid.png";
 
 type CountryOption = {
@@ -23,7 +28,7 @@ type CountryOption = {
 const loadCountries = async (): Promise<CountryOption[]> => {
   const env = process.env.NODE_ENV;
   const publicBase = env === "production" ? cmsLinkPROD : cmsLinkDEV;
-  const cmsBase = resolveInternalUrl(publicBase, internalCmsLink);
+  const cmsBase = resolveCmsUrl(publicBase, internalCmsLink);
   const adminUrl = `${cmsBase}/admin/content-manager/collectionType/api::country.country?page=1&pageSize=200&sort=name:ASC`;
   const apiUrl = `${cmsBase}/api/countries?pagination[page]=1&pagination[pageSize]=200&sort=name:ASC`;
 
@@ -82,13 +87,9 @@ export default function QuizPage({ countries }: Props) {
   const channel = String(router.query.channel || "email").toLowerCase();
   const target = String(router.query.target || "");
   const name = String(router.query.name || "").trim();
+  const email = String(router.query.email || "").trim();
   const kidAgeRaw = String(router.query.kid_age || "").trim();
   const country = String(router.query.country || "").trim();
-
-  const countryName = useMemo(() => {
-    const byId = countries.find((item) => String(item.id) === country);
-    return byId?.name || country;
-  }, [countries, country]);
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -100,7 +101,14 @@ export default function QuizPage({ countries }: Props) {
     const education = String(formData.get("education") || "").trim();
     const contactValue = String(formData.get("contact") || "").trim();
 
-    if (!name || !kidAgeRaw || !country || !together || !education || !contactValue) {
+    if (
+      !name ||
+      !kidAgeRaw ||
+      !country ||
+      !together ||
+      !education ||
+      !contactValue
+    ) {
       setError("Заполните все поля опроса");
       return;
     }
@@ -118,6 +126,7 @@ export default function QuizPage({ countries }: Props) {
           education,
           contactChannel: channel,
           contactValue,
+          emailContact: email,
         }),
       });
       if (!response.ok) throw new Error("submit_failed");
@@ -136,18 +145,32 @@ export default function QuizPage({ countries }: Props) {
   };
 
   return (
-    <Box position="relative" minH="100vh" bg="#290f0f" color="white">
+    <Box
+      position="relative"
+      minH="calc(100vh - 56px)"
+      w="100vw"
+      ml="calc(50% - 50vw)"
+      bg="#290f0f"
+      color="white"
+      overflow="hidden"
+    >
       <Box
         position="absolute"
-        top="1%"
-        left="50%"
-        transform="translateX(-50%)"
-        w="100vw"
+        inset="0"
+        w="100%"
+        h="100%"
         filter={{ base: "opacity(0.5)", lg: "opacity(0.3)" }}
         zIndex={0}
         pointerEvents="none"
       >
-        <Box as="img" src={gridPattern.src} alt="Grid background pattern" w="100vw" h="auto" />
+        <Box
+          as="img"
+          src={gridPattern.src}
+          alt="Grid background pattern"
+          w="100%"
+          h="100%"
+          objectFit="cover"
+        />
       </Box>
 
       <Box
@@ -173,15 +196,15 @@ export default function QuizPage({ countries }: Props) {
             lineHeight="1.15"
             mb="2"
           >
-            Анкета BostonGrad
+            Анкета
           </Text>
-          <Text color="rgba(255,255,255,0.9)" fontSize={{ base: "lg", md: "xl" }} mb="6">
+          <Text
+            color="rgba(255,255,255,0.9)"
+            fontSize={{ base: "lg", md: "xl" }}
+            mb="6"
+          >
             Заполните опрос, и мы свяжемся с вами в выбранном канале.
           </Text>
-          <Text color="rgba(255,255,255,0.82)" fontSize={{ base: "md", md: "lg" }} mb="6">
-            Анкета: {name}, возраст {kidAgeRaw}, страна {countryName}
-          </Text>
-
           <Box as="form" onSubmit={onSubmit}>
             <Grid gridTemplateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={4}>
               <CustomSelect
@@ -216,12 +239,16 @@ export default function QuizPage({ countries }: Props) {
               />
 
               <InputGroup>
-                <InputLeftElement h={{ base: "58px", md: "52px" }} color="#5a2a2a">
+                <InputLeftElement
+                  h={{ base: "58px", md: "52px" }}
+                  color="#5a2a2a"
+                >
                   <RiMailLine />
                 </InputLeftElement>
                 <Input
                   name="contact"
                   placeholder={contactLabelByChannel(channel)}
+                  defaultValue={channel === "email" ? email : ""}
                   required
                   h={{ base: "58px", md: "52px" }}
                   pl="10"
@@ -241,12 +268,14 @@ export default function QuizPage({ countries }: Props) {
                 mt={1}
                 size="lg"
                 w="100%"
-                gridColumn={{ base: "1 / -1", md: "1 / -1" }}
+                gridColumn={{ base: "1 / -1", md: "auto" }}
                 type="submit"
                 isLoading={isSubmitting}
                 fontSize={{ base: "lg", md: "xl" }}
                 bg={isSent ? "#2f9e44" : undefined}
-                bgGradient={isSent ? undefined : "linear(to-r, #f6d894 0%, #eebc57 100%)"}
+                bgGradient={
+                  isSent ? undefined : "linear(to-r, #f6d894 0%, #eebc57 100%)"
+                }
                 color={isSent ? "white" : "#4a1c1c"}
                 _hover={{ filter: "brightness(1.03)" }}
                 _active={{ filter: "brightness(0.98)" }}
@@ -256,7 +285,11 @@ export default function QuizPage({ countries }: Props) {
               </Button>
 
               {error ? (
-                <Text gridColumn="1 / -1" color="red.300" fontSize={{ base: "md", md: "lg" }}>
+                <Text
+                  gridColumn="1 / -1"
+                  color="red.300"
+                  fontSize={{ base: "md", md: "lg" }}
+                >
                   {error}
                 </Text>
               ) : null}

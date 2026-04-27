@@ -1,12 +1,4 @@
-import { Box, BoxProps } from "@chakra-ui/react";
-import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useState } from "react";
-
-const DotLottieReact = dynamic(
-  () =>
-    import("@lottiefiles/dotlottie-react").then((mod) => mod.DotLottieReact),
-  { ssr: false },
-);
+import { Box, BoxProps, Spinner } from "@chakra-ui/react";
 
 const sizeMap = {
   xs: 16,
@@ -27,82 +19,31 @@ type LoaderProps = BoxProps & {
 
 const Loader = ({
   size = "md",
-  src = "/animation4.lottie",
+  src: _src,
   opacity = 1,
-  delay = 0,
-  shift = 0,
+  delay: _delay = 0,
+  shift: _shift = 0,
   isActive = true,
   ...boxProps
 }: LoaderProps) => {
   const px = typeof size === "number" ? size : (sizeMap[size] ?? sizeMap.md);
   const boxSize = `${px}px`;
-  const delayMs = useMemo(() => Math.max(0, delay) * 1000, [delay]);
-  const shiftMs = useMemo(() => Math.max(0, shift) * 1000, [shift]);
-  const [dotLottie, setDotLottie] = useState<any>(null);
-  const dotLottieRefCallback = useCallback((instance: any) => {
-    setDotLottie(instance);
-  }, []);
-
-  useEffect(() => {
-    if (!dotLottie || delayMs <= 0 || !isActive) {
-      return;
-    }
-
-    let timer: ReturnType<typeof setTimeout> | null = null;
-    const handleComplete = () => {
-      if (timer) {
-        clearTimeout(timer);
-      }
-      timer = setTimeout(() => {
-        dotLottie.play();
-      }, delayMs);
-    };
-
-    dotLottie.addEventListener("complete", handleComplete);
-
-    return () => {
-      dotLottie.removeEventListener("complete", handleComplete);
-      if (timer) {
-        clearTimeout(timer);
-      }
-    };
-  }, [dotLottie, delayMs, isActive, src]);
-
-  useEffect(() => {
-    if (!dotLottie || shiftMs <= 0 || !isActive) {
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      dotLottie.play();
-    }, shiftMs);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [dotLottie, shiftMs, isActive, src]);
-
-  useEffect(() => {
-    if (!dotLottie) return;
-
-    if (isActive) {
-      dotLottie.play();
-      return;
-    }
-
-    if (typeof dotLottie.pause === "function") {
-      dotLottie.pause();
-    }
-  }, [dotLottie, isActive]);
 
   return (
-    <Box boxSize={boxSize} filter={`opacity(${opacity})`} {...boxProps}>
-      <DotLottieReact
-        src={src}
-        autoplay={isActive && shiftMs <= 0}
-        loop={isActive && delayMs <= 0}
-        dotLottieRefCallback={dotLottieRefCallback}
-        style={{ width: boxSize, height: boxSize }}
+    <Box
+      boxSize={boxSize}
+      filter={`opacity(${isActive ? opacity : 0})`}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      {...boxProps}
+    >
+      <Spinner
+        thickness={`${Math.max(2, Math.round(px / 14))}px`}
+        speed="0.75s"
+        emptyColor="rgba(126,31,36,0.16)"
+        color="peach.500"
+        boxSize={boxSize}
       />
     </Box>
   );

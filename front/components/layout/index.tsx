@@ -35,6 +35,10 @@ const Layout = ({ children }: { children: any }) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_CONVERTER_URL) {
+      return;
+    }
+
     const fetcher = initCurrencyConverterFetcher();
     fetcher().then((resp) => {
       if (resp.data) {
@@ -109,7 +113,7 @@ const Layout = ({ children }: { children: any }) => {
         gap="4"
         minH="calc(100vh - 56px)"
       >
-        <Box maxW={{ base: "100%", md: "888px" }} w="100%">
+        <Box maxW={{ base: "100%", md: "1066px" }} w="100%">
           {children}
         </Box>
       </VStack>

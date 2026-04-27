@@ -703,9 +703,43 @@ export const MainTextsQuery = gql`
   }
 `;
 
-export const cardsQuery = gql`
-  query Cards($locale: I18NLocaleCode) {
-    cards(locale: $locale, pagination: { start: 0, limit: 2000 }) {
+export const unisQuery = gql`
+  query Unis {
+    unis(pagination: { page: 1, pageSize: 10 }, sort: "header:ASC") {
+      data {
+        id
+        attributes {
+          header
+          subheader
+          image {
+            data {
+              id
+              attributes {
+                name
+                alternativeText
+                url
+                formats
+              }
+            }
+          }
+          article {
+            data {
+              id
+              attributes {
+                code
+                header
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const legacyCardsQuery = gql`
+  query LegacyCards {
+    cards(pagination: { start: 0, limit: 2000 }) {
       data {
         id
         attributes {

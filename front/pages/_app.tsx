@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { Box, ChakraProvider } from "@chakra-ui/react";
+import { Box, ChakraProvider, Spinner } from "@chakra-ui/react";
 import theme from "../styles/theme";
 import Layout from "../components/layout";
 import store from "../redux/store";
@@ -10,7 +10,6 @@ import { useRouter } from "next/router";
 import { defaultConfig } from "../next-seo.config";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
-import dynamic from "next/dynamic";
 import { useAppDispatch } from "../redux/hooks";
 import { setLoadingStatus } from "../redux/mainReducer";
 
@@ -71,12 +70,6 @@ const RouteLoadingHandler = () => {
 
   return null;
 };
-
-const DotLottieReact = dynamic(
-  () =>
-    import("@lottiefiles/dotlottie-react").then((mod) => mod.DotLottieReact),
-  { ssr: false },
-);
 
 const lightOnlyColorModeManager = {
   type: "localStorage" as const,
@@ -172,14 +165,13 @@ const RouteLoadingOverlay = () => {
       opacity={active ? 1 : 0}
       transition="opacity 200ms ease"
     >
-      <Box w="72px" h="72px">
-        <DotLottieReact
-          src="/animation4.lottie"
-          autoplay
-          loop
-          style={{ width: "72px", height: "72px" }}
-        />
-      </Box>
+      <Spinner
+        thickness="4px"
+        speed="0.75s"
+        emptyColor="rgba(255,255,255,0.22)"
+        color="#f6d894"
+        boxSize="56px"
+      />
     </Box>
   );
 };

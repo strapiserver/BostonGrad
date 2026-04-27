@@ -1,19 +1,22 @@
 import React from "react";
-import fallbackImage from "../../../public/fallback.png";
-import { HStack, VStack, Text, Image, Box } from "@chakra-ui/react";
+import logoLQ from "../../../public/logoLQ.png";
+import { HStack, Text, Image } from "@chakra-ui/react";
+import { base } from "../../../services/utils";
 
 export default function WebsiteData() {
+  const websiteDomain = base || "bostongrad.com";
+
   return (
     <HStack mt="8">
       <Image
         w="40px"
         h="40px"
-        src={fallbackImage.src || ""}
-        alt={`${process.env.NEXT_PUBLIC_NAME}.com`}
+        src={logoLQ.src || ""}
+        alt="BostonGrad"
       />
       <HStack gap="2" alignItems="center">
         <Text fontSize="xl" color="bg.700">
-          {process.env.NEXT_PUBLIC_NAME}.com
+          {websiteDomain}
         </Text>
         <Text fontSize="sm" color="bg.800" mt="1">
           • 2026

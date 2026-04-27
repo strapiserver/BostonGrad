@@ -8,15 +8,17 @@ let redis: Redis | null = null;
 let redisDisabled = false;
 
 const logPrefix = "[upstash]";
+const shouldLogRedisDisabled =
+  process.env.DEBUG_REDIS === "true" || process.env.DEBUG_REDIS === "1";
 
 if (!useRedis) {
   redisDisabled = true;
-  if (process.env.NODE_ENV !== "test") {
+  if (shouldLogRedisDisabled && process.env.NODE_ENV !== "test") {
     console.warn(`${logPrefix} Redis disabled via USE_REDIS.`);
   }
 } else if (!redisUrl || !redisToken) {
   redisDisabled = true;
-  if (process.env.NODE_ENV !== "test") {
+  if (shouldLogRedisDisabled && process.env.NODE_ENV !== "test") {
     console.warn(
       `${logPrefix} Redis credentials are missing. Falling back to in-memory fetches.`
     );

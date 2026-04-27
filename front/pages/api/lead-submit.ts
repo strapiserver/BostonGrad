@@ -1,10 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { gql } from "graphql-request";
 import { requestStrapiAsService } from "../../services/server/strapiClient";
 import { createLeadMutation } from "../../services/queries";
 import { generateLeadStartCode } from "../../services/server/leadLinkCode";
 
 type LeadSubmitBody = {
   name?: string;
+  email?: string;
   kid_age?: number;
   country?: string;
   honeypot?: string;
@@ -18,9 +20,40 @@ type LeadSubmitResponse = {
   error?: string;
 };
 
+const SOCIAL_BY_NAME = gql`
+  query SocialByName($name: String!) {
+    socialnetworks(filters: { name: { eqi: $name } }, pagination: { start: 0, limit: 1 }) {
+      data {
+        id
+      }
+    }
+  }
+`;
+
+const CREATE_LEAD_CONTACT = gql`
+  mutation CreateLeadContact($data: LeadContactInput!) {
+    createLeadContact(data: $data) {
+      data {
+        id
+      }
+    }
+  }
+`;
+
+const UPDATE_LEAD = gql`
+  mutation UpdateLead($id: ID!, $data: LeadInput!) {
+    updateLead(id: $id, data: $data) {
+      data {
+        id
+      }
+    }
+  }
+`;
+
 const isValidBody = (body: any): body is LeadSubmitBody => {
   if (!body || typeof body !== "object") return false;
   if (typeof body.name !== "string" || !body.name.trim()) return false;
+  if (typeof body.email !== "string" || !body.email.trim()) return false;
   if (typeof body.kid_age !== "number" || Number.isNaN(body.kid_age)) return false;
   if (typeof body.country !== "string" || !body.country.trim()) return false;
   if (typeof body.honeypot !== "string") return false;
@@ -50,7 +83,7 @@ export default async function handler(
     return res.status(400).json({ success: false, error: "Invalid payload" });
   }
 
-  const { name, kid_age, country, honeypot } = req.body as Required<LeadSubmitBody>;
+  const { name, email, kid_age, country, honeypot } = req.body as Required<LeadSubmitBody>;
   if (honeypot.trim()) {
     // pretend success to not teach bots
     return res.status(200).json({ success: true });
@@ -83,6 +116,35 @@ export default async function handler(
     }
 
     const leadId = String(leadIdRaw);
+    const socialResult = (await requestStrapiAsService(SOCIAL_BY_NAME, {
+      name: "Email",
+    })) as { socialnetworks?: { data?: Array<{ id?: string | number }> } };
+    const socialId = String(socialResult?.socialnetworks?.data?.[0]?.id || "");
+    if (!socialId) {
+      return res.status(404).json({ success: false, error: "Socialnetwork not found: Email" });
+    }
+
+    const leadContactResult = (await requestStrapiAsService(CREATE_LEAD_CONTACT, {
+      data: {
+        socialnetwork: socialId,
+        user_id: email.trim(),
+        username: email.trim(),
+        isBanned: false,
+        isCallForbidden: false,
+      },
+    })) as { createLeadContact?: { data?: { id?: string | number } } };
+    const contactId = String(leadContactResult?.createLeadContact?.data?.id || "");
+    if (!contactId) {
+      return res.status(502).json({ success: false, error: "Lead contact not created" });
+    }
+
+    await requestStrapiAsService(UPDATE_LEAD, {
+      id: leadId,
+      data: {
+        lead_contacts: [contactId],
+      },
+    });
+
     const leadStartCode = generateLeadStartCode(leadId);
     return res.status(200).json({
       success: true,

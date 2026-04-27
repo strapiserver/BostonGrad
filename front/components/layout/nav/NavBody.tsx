@@ -38,19 +38,19 @@ const NavBody = ({ inline = false }: { inline?: boolean }) => {
         href={"/create"}
         CustomIcon={RiTokenSwapLine}
       /> */}
-      <LinkButton
+      {/* <LinkButton
         message="Университеты"
         href={"/universities"}
         CustomIcon={RiGraduationCapFill}
         compact={inline}
-      />
+      /> */}
 
-      <LinkButton
+      {/* <LinkButton
         message="Телеграм"
         href={`https://t.me/${process.env.NEXT_PUBLIC_NAME}`}
         CustomIcon={RiTelegram2Fill}
         compact={inline}
-      />
+      /> */}
       {/* <LinkButton
         message={t("main:botPage")}
         href={"https://t.me/p2pie_bot"}
@@ -58,7 +58,7 @@ const NavBody = ({ inline = false }: { inline?: boolean }) => {
       /> */}
       <LinkButton
         message="Проживание"
-        href={"/living"}
+        href={"/articles/living"}
         CustomIcon={RiHotelFill}
         compact={inline}
       />

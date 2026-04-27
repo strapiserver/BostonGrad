@@ -16,13 +16,30 @@ import { ISEO } from "../../../types/general";
 import UniversalSeo from "../../shared/UniversalSeo";
 import { RiArticleLine, RiArrowRightSLine, RiCalendarEventLine } from "react-icons/ri";
 import ArticleStats from "./ArticleStats";
+import Forms from "../../main/form";
+import { IImage } from "../../../types/selector";
+
+type SocialNetworkItem = {
+  name: string;
+  icon: IImage | null;
+  url: string;
+};
+
+type CountryOption = {
+  id: string;
+  name: string;
+};
 
 export default function GeneralArticle({
   article,
   seo,
+  countries,
+  socialNetworks,
 }: {
   article: IArticle | null;
   seo: ISEO;
+  countries?: CountryOption[] | null;
+  socialNetworks?: SocialNetworkItem[] | null;
 }) {
   const frameBg = useColorModeValue(
     "linear-gradient(180deg, #fbf8f2 0%, #f4ede3 100%)",
@@ -38,6 +55,22 @@ export default function GeneralArticle({
   const borderColor = useColorModeValue("rgba(138,36,43,0.22)", "rgba(240,209,154,0.24)");
   const inlineCodeBg = useColorModeValue("rgba(113,31,36,0.08)", "rgba(240,209,154,0.18)");
   const hasArticle = Boolean(article && (article.header || article.text || article.subheader));
+  const articleLeadForm = (
+    <Box
+      mt={{ base: 5, md: 7 }}
+      p={{ base: 4, md: 6 }}
+      borderRadius={{ base: "20px", md: "24px" }}
+      bg="linear-gradient(145deg, rgba(113,31,36,0.96) 0%, rgba(70,18,22,0.96) 100%)"
+      border="1px solid rgba(240,209,154,0.32)"
+      boxShadow="0 18px 38px rgba(60,20,20,0.18)"
+    >
+      <Forms
+        title="Получите PDF-программу и консультацию по датам"
+        countries={countries || []}
+        socialNetworks={socialNetworks || []}
+      />
+    </Box>
+  );
 
   if (!hasArticle) {
     return (
@@ -59,6 +92,7 @@ export default function GeneralArticle({
               Проверь ссылку или открой историю с главной страницы.
             </Text>
           </Box>
+          {articleLeadForm}
         </Container>
       </>
     );
@@ -110,7 +144,7 @@ export default function GeneralArticle({
               {article ? (
                 <HStack
                   spacing="3"
-                  color="#f3e3c5"
+                  color="white"
                   bg="rgba(0,0,0,0.16)"
                   borderRadius="12px"
                   px="3.5"
@@ -239,6 +273,8 @@ export default function GeneralArticle({
             ) : null}
           </Box>
         </Box>
+
+        {articleLeadForm}
       </Container>
     </>
   );

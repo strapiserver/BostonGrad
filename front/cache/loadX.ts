@@ -16,7 +16,8 @@ import {
   FAQbyCategoryCodeQuery,
   FAQsQuery,
   allReviewsQuery,
-  cardsQuery,
+  unisQuery,
+  legacyCardsQuery,
   mainSingleQuery,
   storiesQuery,
 } from "../services/queries";
@@ -27,7 +28,7 @@ import {
   exchangerNameToSlug,
   exchangerSlugToName,
 } from "../components/exchangers/helper";
-import { IArticle, ICard, IMainSingle, IStory } from "../types/pages";
+import { IArticle, IMainSingle, IStory, IUni } from "../types/pages";
 import { IExchanger, IExchangerPreview } from "../types/exchanger";
 import { IMassDirTextId, IMassDirText, IMassRate } from "../types/mass";
 import { IFaqCategory } from "../types/faq";
@@ -156,29 +157,38 @@ export const loadMainTexts = () =>
     cmsFetcher(MainTextsQuery, { locale }),
   );
 
-export const loadCards = () =>
-  cachedFetch(`cards_${locale}`, TTL.slow, async () => {
-    const normalizeCards = (input: ICard[] | null | undefined) =>
-      (input || []).filter((card) => !!card?.slug);
+export const loadUnis = () =>
+  cachedFetch(`unis_${locale}`, TTL.slow, async () => {
+    const normalizeUnis = (input: IUni[] | null | undefined) =>
+      (input || []).filter((uni) =>
+        Boolean(
+          uni?.id &&
+            (uni?.header ||
+              uni?.article?.header ||
+              uni?.image ||
+              uni?.article?.code ||
+              uni?.slug),
+        ),
+      );
 
-    const localized = (await cmsFetcher(cardsQuery, { locale })) as ICard[] | null;
-    const normalizedLocalized = normalizeCards(localized);
-    if (normalizedLocalized.length > 0) return normalizedLocalized;
-
-    const fallback = (await cmsFetcher(cardsQuery)) as ICard[] | null;
-    const normalizedFallback = normalizeCards(fallback);
-    if (normalizedFallback.length > 0) return normalizedFallback;
-
-    const serviceLocalized = (await fetchCMSWithServiceFallback(cardsQuery, {
-      locale,
-    })) as ICard[] | null;
-    const normalizedServiceLocalized = normalizeCards(serviceLocalized);
-    if (normalizedServiceLocalized.length > 0) return normalizedServiceLocalized;
+    const primary = (await cmsFetcher(unisQuery)) as IUni[] | null;
+    const normalizedPrimary = normalizeUnis(primary);
+    if (normalizedPrimary.length > 0) return normalizedPrimary;
 
     const serviceFallback =
-      (await fetchCMSWithServiceFallback(cardsQuery)) as ICard[] | null;
-    const normalizedServiceFallback = normalizeCards(serviceFallback);
+      (await fetchCMSWithServiceFallback(unisQuery)) as IUni[] | null;
+    const normalizedServiceFallback = normalizeUnis(serviceFallback);
     if (normalizedServiceFallback.length > 0) return normalizedServiceFallback;
+
+    const legacyCards = (await cmsFetcher(legacyCardsQuery)) as IUni[] | null;
+    const normalizedLegacyCards = normalizeUnis(legacyCards);
+    if (normalizedLegacyCards.length > 0) return normalizedLegacyCards;
+
+    const legacyServiceFallback =
+      (await fetchCMSWithServiceFallback(legacyCardsQuery)) as IUni[] | null;
+    const normalizedLegacyServiceFallback = normalizeUnis(legacyServiceFallback);
+    if (normalizedLegacyServiceFallback.length > 0)
+      return normalizedLegacyServiceFallback;
 
     return [];
   });

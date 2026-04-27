@@ -3,12 +3,17 @@ import React from "react";
 import { IImage } from "../../types/selector";
 import { cmsLinkPROD, cmsLinkDEV } from "../../services/utils";
 
+type ImageQualityMode = "low" | "medium" | "high";
+type ImageQualityBreakpoints = Partial<
+  Record<"base" | "sm" | "md" | "lg" | "xl" | "2xl", ImageQualityMode>
+>;
+
 const FALLBACK_IMAGE =
   "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 
 const resolveVariantUrl = (
   img?: IImage | null,
-  qualityMode: "low" | "medium" | "high" = "high",
+  qualityMode: ImageQualityMode = "high",
 ) => {
   if (!img?.url) return img?.url;
 
@@ -24,10 +29,7 @@ const resolveVariantUrl = (
     qualityMode === "low"
       ? formats?.small?.url || formats?.thumbnail?.url || null
       : qualityMode === "medium"
-        ? formats?.medium?.url ||
-          formats?.small?.url ||
-          formats?.thumbnail?.url ||
-          null
+        ? formats?.medium?.url || formats?.small?.url || null
         : img?.url;
   if (fromFormats) return fromFormats;
 
@@ -50,6 +52,7 @@ const CustomImage = ({
   objectFit = "cover",
   lowQualityOnMobile = false,
   adaptiveQuality = false,
+  adaptiveQualityBreakpoints,
   ...boxProps
 }: {
   img?: IImage | null;
@@ -60,14 +63,17 @@ const CustomImage = ({
   objectFit?: "cover" | "contain";
   lowQualityOnMobile?: boolean;
   adaptiveQuality?: boolean;
+  adaptiveQualityBreakpoints?: ImageQualityBreakpoints;
 } & BoxProps) => {
   const env = process.env.NODE_ENV;
   const SRC = env === "production" ? cmsLinkPROD : cmsLinkDEV;
-  const qualityMode = useBreakpointValue<"low" | "medium" | "high">({
-    base: "high",
-    md: "medium",
-    lg: "high",
-  });
+  const qualityMode = useBreakpointValue<ImageQualityMode>(
+    adaptiveQualityBreakpoints || {
+      base: "high",
+      md: "medium",
+      lg: "high",
+    },
+  );
 
   const resolvedImageUrl = adaptiveQuality
     ? resolveVariantUrl(img, qualityMode || "high")
@@ -81,13 +87,15 @@ const CustomImage = ({
       : `${SRC}${resolvedImageUrl}`
     : FALLBACK_IMAGE;
   const imageKey = `${img?.id || "fallback"}-${qualityMode || "high"}-${adaptiveQuality ? "adaptive" : "default"}`;
+  const imageWidth = w === "auto" ? "auto" : "100%";
+  const imageHeight = h === "auto" ? "auto" : "100%";
 
   return (
     <Box w={w} h={h} maxW={w} maxH={h} overflow="hidden" {...boxProps}>
       <Image
         key={imageKey}
-        w="100%"
-        h="100%"
+        w={imageWidth}
+        h={imageHeight}
         objectFit={objectFit}
         fit={objectFit}
         filter={shaded ? "grayscale(0.6) brightness(0.3)" : "none"}

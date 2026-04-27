@@ -7,6 +7,9 @@ const normalizeEnvValue = (value?: string) => {
 
 const useInternal =
   normalizeEnvValue(process.env.USE_INTERNAL)?.toLowerCase() === "true";
+const isDev =
+  normalizeEnvValue(process.env.IS_DEV)?.toLowerCase() === "true";
+const publicCmsUrl = normalizeEnvValue(process.env.NEXT_PUBLIC_CMS_URL);
 
 export const base = normalizeEnvValue(process.env.NEXT_PUBLIC_BASE);
 const normalizedIndex = normalizeEnvValue(process.env.NEXT_PUBLIC_INDEX);
@@ -42,6 +45,11 @@ export const minRatesMap = +(process.env.NEXT_PUBLIC_MIN_RATES_MAP || 2);
 
 export const resolveInternalUrl = (external: string, internal?: string) =>
   isServerSide && useInternal && internal ? internal : external;
+
+export const resolveCmsUrl = (external: string, internal?: string) =>
+  isServerSide && useInternal && internal
+    ? internal
+    : publicCmsUrl || external;
 
 export const locale = "ru" as "ru" | "en";
 

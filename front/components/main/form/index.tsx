@@ -1,6 +1,6 @@
 import { Box, Button, Grid, Input, Text, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { RiSendPlaneFill } from "react-icons/ri";
-import { RiUser3Line, RiListSettingsLine } from "react-icons/ri";
+import { RiUser3Line, RiListSettingsLine, RiMailLine } from "react-icons/ri";
 import CustomSelect from "../../shared/CustomSelect";
 import { IImage } from "../../../types/selector";
 import settings from "./settings.json";
@@ -120,6 +120,7 @@ export default function Forms({
 
     const formData = new FormData(e.currentTarget);
     const name = String(formData.get("name") || "").trim();
+    const email = String(formData.get("email") || "").trim();
     const kidAgeRaw = String(formData.get("kid_age") || "").trim();
     const country = String(formData.get("country") || "").trim();
     const honeypot = String(formData.get("contact_time") || "").trim();
@@ -141,7 +142,7 @@ export default function Forms({
       setError("Выберите возраст ребенка");
       return;
     }
-    if (!name || !country) {
+    if (!name || !email || !country) {
       return;
     }
 
@@ -161,6 +162,7 @@ export default function Forms({
           channel: selectedChannel,
           target: socialNetworkUrl,
           name,
+          email,
           kid_age: kidAgeRaw,
           country,
         });
@@ -176,6 +178,7 @@ export default function Forms({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
+          email,
           kid_age: Number(kidAgeRaw),
           country,
           honeypot,
@@ -318,6 +321,31 @@ export default function Forms({
             boxShadow: "0 0 0 1px rgba(246,216,148,0.9)",
           }}
         />
+        <InputGroup>
+          <InputLeftElement h={{ base: "52px", md: "56px" }} color="#5a2a2a">
+            <RiMailLine />
+          </InputLeftElement>
+          <Input
+            type="email"
+            name="email"
+            borderRadius="lg"
+            placeholder="Email"
+            required
+            h={{ base: "52px", md: "56px" }}
+            pl="10"
+            fontSize={{ base: "md", md: "2xl" }}
+            bg="white"
+            color="#2d1a1a"
+            borderColor="rgba(255,255,255,0.65)"
+            _hover={{ borderColor: "rgba(255,255,255,0.9)" }}
+            _focus={{
+              borderColor: "#f6d894",
+              boxShadow: "0 0 0 1px rgba(246,216,148,0.9)",
+            }}
+            _placeholder={{ color: "rgba(45,26,26,0.6)" }}
+          />
+        </InputGroup>
+
         <Button
           size="md"
           h={{ base: "48px", md: "50px" }}
@@ -327,7 +355,6 @@ export default function Forms({
           _hover={{ filter: "brightness(1.03)" }}
           _active={{ filter: "brightness(0.98)" }}
           w="100%"
-          gridColumn={{ base: "1 / -1", md: "1 / -1" }}
           rightIcon={<RiSendPlaneFill />}
           type="submit"
           isLoading={isSubmitting}

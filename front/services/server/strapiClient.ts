@@ -3,6 +3,7 @@ import {
   cmsLinkDEV,
   cmsLinkPROD,
   internalCmsLink,
+  resolveCmsUrl,
   resolveInternalUrl,
 } from "../utils";
 
@@ -25,7 +26,7 @@ let cachedToken: CachedToken | null = null;
 const getGraphqlUrl = () => {
   const env = process.env.NODE_ENV;
   const publicBase = env === "production" ? cmsLinkPROD : cmsLinkDEV;
-  const baseUrl = resolveInternalUrl(publicBase, internalCmsLink);
+  const baseUrl = resolveCmsUrl(publicBase, internalCmsLink);
   return `${baseUrl}/graphql`;
 };
 
