@@ -213,86 +213,75 @@ const PriceSection = ({ priceTitle, priceButtonText }: PriceSectionProps) => {
           </SimpleGrid>
         </Grid>
 
-        <Grid
-          templateColumns={{ base: "1fr", md: "1.25fr 0.75fr" }}
-          border="1px solid rgba(235,205,143,0.28)"
-          borderRadius="18px"
-          overflow="hidden"
-          bg="linear-gradient(180deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.045) 100%)"
-        >
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing="4">
           {[
             ["Базовый пакет", "входит в оба формата", oneWeekIncluded],
             [
-              "Дополнительно во 2 недели",
-              "только для двухнедельного тура",
+              "2 недели",
+              "дополнительно к базовому пакету",
               twoWeekExtras,
             ],
-          ].map(([title, subtitle, items], index) => (
+          ].map(([title, subtitle, items]) => (
             <Box
               key={title as string}
-              p={{ base: 5, md: 6 }}
-              borderLeft={{
-                base: "none",
-                md: index ? "1px solid rgba(235,205,143,0.22)" : "none",
-              }}
-              borderTop={{
-                base: index ? "1px solid rgba(235,205,143,0.22)" : "none",
-                md: "none",
-              }}
+              p={{ base: 4, md: 5 }}
+              borderRadius="16px"
+              border="1px solid rgba(235,205,143,0.24)"
+              bg="rgba(255,255,255,0.055)"
+              boxShadow="inset 0 1px 0 rgba(255,255,255,0.08)"
+              h="100%"
             >
-              <HStack spacing="4" mb="4" align="center">
+              <HStack spacing="3" mb="4" align="center">
                 <Box
-                  w="38px"
-                  h="38px"
+                  w="28px"
+                  h="28px"
                   borderRadius="full"
-                  border="1px solid rgba(235,205,143,0.58)"
-                  bg="rgba(79,16,18,0.35)"
-                  color={palette.gold400}
+                  bg="rgba(235,205,143,0.96)"
+                  color={palette.wine700}
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
-                  boxShadow="0 0 18px rgba(235,205,143,0.18)"
+                  flexShrink={0}
                 >
-                  <Box as={RiCheckLine} fontSize="xl" />
+                  <Box as={RiCheckLine} fontSize="md" />
                 </Box>
                 <Box>
                   <Text
                     color="#f7e0ae"
                     fontWeight="900"
-                    fontSize={{ base: "xl", md: "xl", xl: "2xl" }}
-                    lineHeight="1.15"
+                    fontSize={{ base: "lg", md: "xl" }}
+                    lineHeight="1.2"
                   >
                     {title as string}
                   </Text>
-                  <Text color="rgba(255,255,255,0.68)" fontSize="sm" mt="1">
+                  <Text color="rgba(255,255,255,0.64)" fontSize="sm" mt="0.5">
                     {subtitle as string}
                   </Text>
                 </Box>
               </HStack>
-              <Box h="1px" bg="rgba(235,205,143,0.18)" mb="4" />
-              <VStack align="stretch" spacing="0">
+              <VStack align="stretch" spacing="2">
                 {(items as string[]).map((item) => (
                   <HStack
                     key={item}
-                    align="start"
-                    spacing="3"
+                    align="center"
+                    spacing="2.5"
+                    px="3"
                     py="2.5"
-                    borderBottom="1px solid rgba(255,255,255,0.075)"
-                    _last={{ borderBottom: "none" }}
+                    borderRadius="10px"
+                    bg="rgba(79,16,18,0.2)"
                   >
                     <Box
-                      w="20px"
-                      h="20px"
+                      w="18px"
+                      h="18px"
                       borderRadius="full"
-                      bg="rgba(235,205,143,0.95)"
-                      color={palette.wine700}
+                      border="1px solid rgba(235,205,143,0.7)"
+                      color={palette.gold400}
                       display="flex"
                       alignItems="center"
                       justifyContent="center"
-                      mt="0.5"
                       flexShrink={0}
                     >
-                      <Box as={RiCheckLine} fontSize="sm" />
+                      <Box as={RiCheckLine} fontSize="xs" />
                     </Box>
                     <Text
                       color="rgba(255,255,255,0.92)"
@@ -306,7 +295,7 @@ const PriceSection = ({ priceTitle, priceButtonText }: PriceSectionProps) => {
               </VStack>
             </Box>
           ))}
-        </Grid>
+        </SimpleGrid>
 
         <HStack
           spacing="3"
