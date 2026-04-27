@@ -19,10 +19,13 @@ import {
   RiTeamLine,
   RiTimeLine,
 } from "react-icons/ri";
+import { cmsLinkDEV, cmsLinkPROD } from "../../../services/utils";
 import { palette, sectionShell, sectionTitleCommon } from "./shared";
 
 const cardBg =
   "linear-gradient(180deg, rgba(255,255,255,0.82) 0%, rgba(252,246,237,0.94) 100%)";
+const cmsSrc =
+  process.env.NODE_ENV === "production" ? cmsLinkPROD : cmsLinkDEV;
 
 const SectionCard = ({
   icon,
@@ -133,7 +136,7 @@ export const BostonValueSection = () => (
     >
       <Box
         as="img"
-        src="/uploads/boston_51aa37b450.jpg?updated_at=2026-04-27T15:08:34.299Z"
+        src={`${cmsSrc}/uploads/boston_51aa37b450.jpg?updated_at=2026-04-27T15:08:34.299Z`}
         alt="Бостон"
         w="100%"
         h="100%"
