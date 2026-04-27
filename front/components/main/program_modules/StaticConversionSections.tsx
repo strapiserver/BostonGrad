@@ -147,7 +147,7 @@ export const BostonValueSection = () => (
       <Box
         position="absolute"
         inset="0"
-        bg="linear-gradient(90deg, rgba(79,16,18,0.82) 0%, rgba(79,16,18,0.48) 52%, rgba(79,16,18,0.18) 100%)"
+        bg="linear-gradient(0deg, rgba(79,16,18,0.82) 0%, rgba(79,16,18,0.48) 42%, rgba(79,16,18,0.12) 100%)"
       />
       <Text
         as="h2"
